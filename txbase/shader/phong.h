@@ -45,13 +45,13 @@ namespace TX {
 		/// Vertex shader code.
 		/// </summary>
 		constexpr static ConstString VertShaderSrc =
-#include "Default.vs.glsl"
+#include "default.vs.glsl"
 			;
 		/// <summary>
 		/// Fragment shader code.
 		/// </summary>
 		constexpr static ConstString FragShaderSrc =
-#include "Phong/Phong.fs.glsl"
+#include "phong/phong.fs.glsl"
 			;
 	};
 }

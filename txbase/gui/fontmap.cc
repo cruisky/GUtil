@@ -4,7 +4,7 @@
 #include "txbase/sys/memory.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
-#include "TXBase/Libs/stb_truetype.h"
+#include "txbase/libs/stb_truetype.h"
 
 namespace TX {
 	float GlyphPosMap::GetWidth(int index, int count) const {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TXBase/Math/Geometry.h"
+#include "txbase/math/geometry.h"
 
 namespace TX {
 	class GlyphPosMap;

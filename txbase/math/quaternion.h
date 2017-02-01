@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector.h"
-#include "Matrix.h"
+#include "txbase/math/vector.h"
+#include "txbase/math/matrix.h"
 
 namespace TX
 {

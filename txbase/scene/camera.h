@@ -1,6 +1,6 @@
 #pragma once
-#include "TXBase/fwddecl.h"
-#include "TXBase/Math/Transform.h"
+#include "txbase/fwddecl.h"
+#include "txbase/math/transform.h"
 
 namespace TX
 {
