@@ -36,10 +36,12 @@ namespace TX
 		}
 		else {
 			const Rect& clipRect = clipRectStack.size() ? clipRectStack.back() : NullClipRect;
-			if (cmdBuf.size() > 1 && Math::Length(Vec4(cmdBuf.data()[cmdBuf.size() - 2].clipRect.f) - Vec4(clipRect.f)) < 1e-4f)
+			if (cmdBuf.size() > 1 &&
+				Math::LengthSqr((Vec4)(cmdBuf.data()[cmdBuf.size()-2].clipRect) - (Vec4)(clipRect)) < 1e-4f){
 				cmdBuf.pop_back();			// avoid duplicate
-			else
+			} else {
 				cmd->clipRect = clipRect;	// do nothing
+			}
 		}
 	}
 

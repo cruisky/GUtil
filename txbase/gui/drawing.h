@@ -7,7 +7,7 @@
 
 namespace TX
 {
-	typedef uint16 DrawIdx;
+	typedef uint16_t DrawIdx;
 
 	struct DrawCmd{
 		DrawIdx	idxCount;

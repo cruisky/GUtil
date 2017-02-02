@@ -96,6 +96,10 @@ extern int stbi_write_hdr(char const *filename, int w, int h, int comp, const fl
 #include <assert.h>
 #include <math.h>
 
+#ifdef __unix
+#define fopen_s(pFile,filename,mode) ((*(pFile))=fopen((filename),(mode)))==NULL
+#endif
+
 typedef unsigned int stbiw_uint32;
 typedef int stb_image_write_test[sizeof(stbiw_uint32)==4 ? 1 : -1];
 

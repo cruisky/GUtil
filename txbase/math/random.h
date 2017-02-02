@@ -2,24 +2,33 @@
 
 #include <ctime>
 #include "txbase/fwddecl.h"
+#include "txbase/sys/memory.h"
 
 namespace TX{
+
 	class RNG {
 	public:
-		RNG(uint32 seed = (uint32)time(NULL)){
-			cur_seed_ = (__m128i *)_aligned_malloc(sizeof __m128i, 16);
+		RNG(uint32_t seed = (uint32_t)time(NULL)){
+#ifdef _MSC_VER
+
+			cur_seed_ = (__m128i *) AllocAligned(sizeof __m128i, 16);
 			if (!cur_seed_) throw std::runtime_error("out of memory");
 			*cur_seed_ = _mm_set_epi32(seed, seed + 1, seed, seed + 1);
+#else
+			cur_seed_ = seed;
+#endif
 		}
 
 		~RNG(){
+#ifdef _MSC_VER
 			if (cur_seed_){
-				_aligned_free(cur_seed_);
-				cur_seed_ = nullptr;
+				FreeAligned(cur_seed_);
 			}
+#endif
 		}
 
-		inline uint32 UInt(){
+		inline uint32_t UInt(){
+#ifdef _MSC_VER
 			__declspec(align(16)) uint32 result[4];
 			__declspec(align(16)) __m128i cur_seed_split;
 			__declspec(align(16)) __m128i multiplier;
@@ -52,9 +61,15 @@ namespace TX{
 			sseresult = _mm_and_si128(sseresult, sra_mask);
 			_mm_storeu_si128((__m128i*) result, sseresult);
 			return;
-#endif
+#else
 			_mm_storeu_si128((__m128i*) result, *cur_seed_);
 			return result[0];
+#endif COMPATABILITY
+
+#else // _MSC_VER
+			cur_seed_ = (214013*cur_seed_+2531011);
+			return (cur_seed_>>16)&0x7FFF;
+#endif // _MSC_VER
 		}
 
 		/// <summary>
@@ -63,10 +78,15 @@ namespace TX{
 		inline float Float(){
 #ifdef COMPATABILITY
 			return UInt() / (float)(0xFFFF);
-#endif
+#else
 			return UInt() / (float)(0xFFFFFFFF);
+#endif
 		}
 	private:
+#ifdef _MSC_VER
 		__m128i* cur_seed_;
+#else
+		uint cur_seed_;
+#endif
 	};
 }

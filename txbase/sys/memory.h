@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdlib>
+#include <cstring>
+
 namespace TX
 {
 	class NonCopyable{
@@ -40,20 +43,39 @@ namespace TX
 		}
 	}
 	template<typename T>
+	inline void MemDeleteArray(void*& ptr){
+		if (ptr){
+			delete[] (T *)ptr;
+			ptr = nullptr;
+		}
+	}
+
+	template<typename T>
 	inline void MemClear(T* ptr, size_t count){
 		if (ptr)
-			memset(ptr, 0, sizeof(T) * count);
+			std::memset(ptr, 0, sizeof(T) * count);
 	}
 
 	template <typename T>
 	inline T* AllocAligned(uint count, size_t alignment = 64) {
-		return (T *)_aligned_malloc(count * sizeof(T), alignment);
+		void* memptr;
+
+#ifdef _MSC_VER
+		memptr = _aligned_malloc(count * sizeof(T), alignment);
+#else
+		posix_memalign(&memptr, alignment, count * sizeof(T));
+#endif
+		return (T *)memptr;
 	}
 
 	template <typename T>
 	inline void FreeAligned(T*& ptr) {
 		if (ptr) {
+#ifdef _MSC_VER
 			_aligned_free(ptr);
+#else
+			free(ptr);
+#endif
 			ptr = nullptr;
 		}
 	}

@@ -7,10 +7,7 @@
 namespace TX
 {
 	struct Rect {
-		union{
-			struct { Vec2 min, max; };
-			float f[4];
-		};
+		Vec2 min, max;
 		Rect() : min(), max(){}
 		~Rect(){}
 		Rect(const Rect& ot) : min(ot.min), max(ot.max) {}
@@ -18,6 +15,7 @@ namespace TX
 		Rect(const Vec2& min, const Vec2& max) : min(min), max(max){}
 		Rect(const Vec4& v) : min(v.x, v.y), max(v.z, v.w){}
 
+		inline operator Vec4() const { return Vec4(min, max); }
 		inline Rect& operator = (const Rect& ot) { min = ot.min; max = ot.max; return *this; }
 
 		inline bool Valid() const { return min <= max; }
@@ -85,7 +83,7 @@ namespace TX
 		inline void Push(const Vec2& p){ points.push_back(p); }
 		inline void Pop(){ points.pop_back(); }
 		inline void Clear(){ points.clear(); }
-		void Triangulate(uint16 *indexBuffer, uint16 idxOffset = 0) const;
+		void Triangulate(uint16_t *indexBuffer, uint16_t idxOffset = 0) const;
 	private:
 		static void UpdateVertex(Vertex& v, Vertex *vertices, int count);
 	};

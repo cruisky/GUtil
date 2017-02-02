@@ -762,11 +762,11 @@ namespace TX { namespace UI { namespace GUI {
 		#pragma endregion
 		#pragma region rendering
 		// Text
-		std::string& tag = getTag(name, val);
+		std::string&& tag = getTag(name, val);
 		if (tag.length() > 0)
 			G.current.window->drawList.AddText(
 				hotArea.min.x, hotArea.min.y - G.style.TextPaddingY,
-				G.style.Font, getTag(name, val).data(),
+				G.style.Font, tag.data(),
 				G.style.Colors[Style::Palette::Text]);
 		// Slider
 		Vec2 trackLine[2] = { slider, slider + Vec2(length, 0.f) };

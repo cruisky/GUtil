@@ -36,8 +36,8 @@ namespace TX{
 			r(ot.r), g(ot.g), b(ot.b), a(ot.a){}
 		~Color(){}
 
-		static Color RGBA(uint32 code);
-		static Color RGB(uint32 code);
+		static Color RGBA(uint32_t code);
+		static Color RGB(uint32_t code);
 
 		inline Color& operator = (const Color& ot) { r = ot.r, g = ot.g, b = ot.b, a = ot.a; return *this; }
 		inline const float& operator [] (size_t i) const { return v[i]; }

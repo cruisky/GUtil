@@ -47,7 +47,7 @@ namespace TX {
 	}
 	FontMap::~FontMap() {
 		glDeleteTextures(1, &texID_);
-		MemDeleteArray(data_);
+		MemDeleteArray<stbtt_bakedchar>(data_);
 	}
 
 	void FontMap::LoadFile(const std::string& file, float height) {

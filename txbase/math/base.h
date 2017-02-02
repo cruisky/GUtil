@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <cmath>
 
 namespace TX {
@@ -50,11 +51,7 @@ namespace TX {
 		///////////////////////////////////////////////////////////////////////
 
 		template <typename T>
-		inline bool IsNAN(const T& num) { return _isnan(num) != 0; }
-		template <typename T>
-		inline bool IsINF(const T& num) { return !_finite(num); }
-		template <typename T>
-		inline bool Valid(const T& num) { return !_isnan(num) && _finite(num); }
+		inline bool Valid(const T& num) { return !std::isnan(num) && std::isfinite(num); }
 
 		template <typename T>
 		inline T     Abs(T n) { return std::abs(n); }
@@ -91,7 +88,7 @@ namespace TX {
 		inline auto Min(const T1& n1, const T2& n2) -> decltype(n1 + n2) { return n1 < n2 ? n1 : n2; }
 		template <typename T1, typename T2, typename... Rest>
 		inline auto Min(const T1& n1, const T2& n2, Rest&&... rest) -> decltype(n1 + n2) { return Min(Min(n1, n2), std::forward<Rest>(rest)...); }
-		template <typename T> inline int Sign(const T& n){ return (T(0) < val) - (val < T(0)); }
+		template <typename T> inline int Sign(const T& n){ return (T(0) < n) - (n < T(0)); }
 		template <typename T> inline bool InBounds(const T& n, const T& min, const T& max) { return min <= n && n <= max; }
 		template <typename T> inline T Clamp(const T& val, const T& min, const T& max){
 			return (val > min) ? ((val < max) ? val : max) : min;

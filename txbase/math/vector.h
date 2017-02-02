@@ -11,10 +11,10 @@ namespace TX
 
 		inline Vec(){}
 		explicit inline Vec(const T& val){ for (auto i = 0; i < N; i++) v[i] = val; }
-		inline Vec(const Vec& ot){ this->operator=(rhs); }
-		inline Vec& operator = (const Vec& rhs){
+		inline Vec(const Vec& ot){ this->operator=(ot); }
+		inline Vec& operator = (const Vec& ot){
 			for (auto i = 0; i < N; i++)
-				v[i] = rhs[i];
+				v[i] = ot[i];
 			return *this;
 		}
 		template<typename U> inline Vec(const Vec<N, U>& ot){ this->operator=<U>(ot); }
@@ -99,8 +99,8 @@ namespace TX
 		inline const Vec& operator /= (const Vec& ot) { x /= ot.x; y /= ot.y; return *this; }
 	};
 
-	template <typename T> const Vec<2, T> Vec<2, T>::ZERO(Math::ZERO);
-	template <typename T> const Vec<2, T> Vec<2, T>::ONE(Math::ONE);
+	template <typename T> const Vec<2, T> Vec<2, T>::ZERO((T)Math::ZERO);
+	template <typename T> const Vec<2, T> Vec<2, T>::ONE((T)Math::ONE);
 	template <typename T> const Vec<2, T> Vec<2, T>::X(Math::ONE, Math::ZERO);
 	template <typename T> const Vec<2, T> Vec<2, T>::Y(Math::ZERO, Math::ONE);
 	template <typename T> const Vec<2, T> Vec<2, T>::UNIT[2] = {
@@ -199,8 +199,8 @@ namespace TX
 		inline Vec& operator /= (const Vec& ot) { x /= ot.x; y /= ot.y; z /= ot.z; return *this; }
 	};
 
-	template <typename T> const Vec<3, T> Vec<3, T>::ZERO(Math::ZERO);
-	template <typename T> const Vec<3, T> Vec<3, T>::ONE(Math::ONE);
+	template <typename T> const Vec<3, T> Vec<3, T>::ZERO((T)Math::ZERO);
+	template <typename T> const Vec<3, T> Vec<3, T>::ONE((T)Math::ONE);
 	template <typename T> const Vec<3, T> Vec<3, T>::X(Math::ONE, Math::ZERO, Math::ZERO);
 	template <typename T> const Vec<3, T> Vec<3, T>::Y(Math::ZERO, Math::ONE, Math::ZERO);
 	template <typename T> const Vec<3, T> Vec<3, T>::Z(Math::ZERO, Math::ZERO, Math::ONE);
@@ -277,6 +277,7 @@ namespace TX
 		inline Vec() : x(Math::ZERO), y(Math::ZERO), z(Math::ZERO), w(Math::ZERO){}
 		explicit inline Vec(const T& val) : x(val), y(val), z(val), w(val){}
 		inline Vec(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w){}
+		inline Vec(const Vec<2, T>& a, const Vec<2, T>& b) : x(a.x), y(a.y), z(b.x), w(b.y){}
 		inline Vec(const T *arr) : x(arr[0]), y(arr[1]), z(arr[2]), w(arr[3]){}
 		inline Vec(const Vec& ot) : x(ot.x), y(ot.y), z(ot.z), w(ot.w){}
 		inline Vec& operator = (const Vec& ot) { x = ot.x, y = ot.y, z = ot.z, w = ot.w; return *this; }

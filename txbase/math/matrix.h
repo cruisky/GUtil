@@ -380,6 +380,6 @@ namespace TX{
 			return false;
 		*x0 = (A[1][1] * B[0] - A[0][1] * B[1]) / det;
 		*x1 = (A[0][0] * B[1] - A[1][0] * B[0]) / det;
-		return !(Math::IsNAN(*x0) || Math::IsNAN(*x1));
+		return !(std::isnan(*x0) || std::isnan(*x1));
 	}
 }

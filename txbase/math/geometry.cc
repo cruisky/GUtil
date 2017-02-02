@@ -8,7 +8,7 @@ namespace TX
 		return ((v3.y - v1.y) * (v2.x - v1.x)) > ((v3.x - v1.x) * (v2.y - v1.y));
 	}
 
-	void Polygon::Triangulate(uint16 *idxBuf, uint16 idxOffset) const {
+	void Polygon::Triangulate(uint16_t *idxBuf, uint16_t idxOffset) const {
 		int vertCount = Count();
 		if (vertCount < 3) return;
 		if (vertCount == 3) {
