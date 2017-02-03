@@ -18,7 +18,8 @@ namespace TX
 	}
 	void ProgressMonitor::Update(float current){
 		assert(in_progress_);
-		LockGuard locking(lock_);
+		std::lock_guard<std::mutex> locking(mutex_);
+
 		double elapsed = timer_.elapsed();
 		float time_advanced = (float)(elapsed - time_since_last_update_);
 		if (time_advanced > 0)
@@ -27,7 +28,8 @@ namespace TX
 		time_since_last_update_ = elapsed;
 	}
 	void ProgressMonitor::UpdateInc(){
-		LockGuard locking(lock_);
+		std::lock_guard<std::mutex> locking(mutex_);
+
 		double elapsed = timer_.elapsed();
 		float time_advanced = (float)(elapsed - time_since_last_update_);
 		if (time_advanced > 0)
@@ -41,7 +43,7 @@ namespace TX
 		time_since_last_update_ = timer_.elapsed();
 	}
 	double ProgressMonitor::ElapsedTime(){
-		LockGuard locking(lock_);
+		std::lock_guard<std::mutex> locking(mutex_);
 		return in_progress_ ? timer_.elapsed() : time_since_last_update_.load();
 	}
 	double ProgressMonitor::RemainingTime(){
@@ -49,7 +51,7 @@ namespace TX
 		return in_progress_ ? (timer_.elapsed() * (1.f - est) / est) : 0.0;
 	}
 	float ProgressMonitor::EstimatedProgress(){
-		LockGuard locking(lock_);
+		std::lock_guard<std::mutex> locking(mutex_);
 		return in_progress_ ? ((current_ + rate_per_sec_ * (float)(timer_.elapsed() - time_since_last_update_)) / total_) : 1.f;
 	}
 }

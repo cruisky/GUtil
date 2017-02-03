@@ -4,111 +4,79 @@
 
 namespace TX
 {
-	Thread::Thread() : mHandle(NULL), mTid(0), mRunning(false)
-	{
-		mStopEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	}
-	void Thread::Start(){
-		if (mRunning)
-			return;
-		DWORD new_tid;
-		mHandle = CreateThread(
-			NULL,
-			0,
-			reinterpret_cast<LPTHREAD_START_ROUTINE>(&ThreadProc),
-			this,
-			0,
-			&new_tid);
-		if (mHandle){
-			mTid = new_tid;
-			mRunning = true;
-		}
-	}
-	void Thread::Stop(){
-		if (mRunning){
-			SetEvent(mStopEvent);
-			WaitForSingleObject(mHandle, INFINITE);
-			CloseHandle(mHandle);
-			mRunning = false;
-		}
-	}
-	DWORD WINAPI Thread::ThreadProc(LPVOID lpParam){
-		Thread* thread = (Thread *)lpParam;
-		while (WaitForSingleObject(thread->mStopEvent, 0) == WAIT_TIMEOUT){
-			thread->WorkLoop();
-		}
-		return 0;
-	}
-
 	// Get a task from the scheduler and run it
-	void WorkerThread::WorkLoop(){
-		mScheduler->taskLock.WaitAndLock();
-		while (mScheduler->Running() && mScheduler->tasks.empty()){
-			mScheduler->taskAvailable.Wait(mScheduler->taskLock);
-		}
-		if (!mScheduler->Running()){
-			mScheduler->taskLock.Unlock();
-			return;
-		}
-		Task& task = mScheduler->tasks.front();
-		mScheduler->tasks.pop_front();
-		mScheduler->taskLock.Unlock();
+	void TaskScheduler::Worker::WorkLoop(){
+		Task task;
+		while(scheduler_->Running()){
+			{// critical region
+				std::unique_lock<std::mutex> tasks_lock(scheduler_->tasks_mutex_);
 
-		task.Run(mId);
+				while (scheduler_->Running() && scheduler_->tasks.empty()){
+					scheduler_->task_available_cv_.wait(tasks_lock);
+				}
+				if (!scheduler_->Running()) return;
 
-		if (--mScheduler->taskCount == 0){
-			mScheduler->taskFinished.WakeOne();	// only ThreadScheduler->JoinAll waits for this condition
+				// take the oldest task
+				task = scheduler_->tasks.front();
+				scheduler_->tasks.pop_front();
+			}
+
+			task.Run(id_);
+
+			if (--scheduler_->task_count_ == 0){
+				// only ThreadScheduler->JoinAll waits for this condition
+				scheduler_->task_finished_cv_.notify_one();
+			}
 		}
 	}
 
-	ThreadScheduler* ThreadScheduler::instance = nullptr;
-	ThreadScheduler* ThreadScheduler::Instance(){
+	TaskScheduler* TaskScheduler::instance = nullptr;
+	TaskScheduler* TaskScheduler::Instance(){
 		if (!instance){
-			instance = new ThreadScheduler;
+			instance = new TaskScheduler;
 		}
 		return instance;
 	}
-	void ThreadScheduler::DeleteInstance(){
+	void TaskScheduler::DeleteInstance(){
 		if (instance){
 			instance->StopAll();
 			MemDelete(instance);
 		}
 	}
-	void ThreadScheduler::StartAll(){
+	void TaskScheduler::StartAll(){
 		int processor_count = std::thread::hardware_concurrency();
 #ifdef _DEBUG
 		processor_count = 1;
 #endif
-		running = true;
-		threads.resize(processor_count);
+		running_ = true;
 		for (int i = 0; i < processor_count; i++){
-			threads[i].Init(this, i);
-			threads[i].Start();
+			threads.emplace_back(this, i);
 		}
 	}
 
-	void ThreadScheduler::StopAll(){
-		running = false;
-		taskLock.WaitAndLock();
-		taskAvailable.WakeAll();
-		taskLock.Unlock();
+	void TaskScheduler::StopAll(){
+		running_ = false;
+		{
+			// wake up all workers so they can stop by themselves
+			std::unique_lock<std::mutex> lock(tasks_mutex_);
+			task_available_cv_.notify_all();
+		}
 		for (uint i = 0; i < threads.size(); i++){
-			threads[i].Stop();
+			threads[i].join();
 		}
+		threads.clear();
 	}
-	void ThreadScheduler::AddTask(Task& newTask){
-		taskLock.WaitAndLock();
+	void TaskScheduler::AddTask(Task& newTask) {
+		std::unique_lock<std::mutex> lock(tasks_mutex_);
 		tasks.push_back(newTask);
-		taskLock.Unlock();
-
-		taskCount++;
-		taskAvailable.WakeAll();
+		task_count_++;
+		task_available_cv_.notify_one();
 	}
-	void ThreadScheduler::JoinAll(){
-		finishedLock.WaitAndLock();
-		while (taskCount > 0){
-			taskFinished.Wait(finishedLock);
+	void TaskScheduler::JoinAll(){
+		std::unique_lock<std::mutex> lock(finished_mutex_);
+
+		while (task_count_ > 0){
+			task_finished_cv_.wait(lock);
 		}
-		finishedLock.Unlock();
 	}
 }

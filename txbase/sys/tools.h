@@ -1,7 +1,8 @@
 #pragma once
 
 #include "txbase/fwddecl.h"
-#include "txbase/sys/thread.h"
+#include <mutex>
+#include <atomic>
 
 namespace TX {
 	std::string ReadAllLines(const std::string& file);
@@ -56,7 +57,7 @@ namespace TX {
 		bool in_progress_;
 		std::atomic<double> time_since_last_update_;
 		Timer timer_;
-		Lock lock_;
+		std::mutex mutex_;
 	};
 
 	template<typename T>
