@@ -14,7 +14,7 @@ namespace TX{
 			Vec3 pos;
 			Quaternion rot;
 			Vec3 scale;
-			TransformInfo() : pos(Math::ZERO), rot(Quaternion::IDENTITY), scale(Math::ONE) {}
+			TransformInfo() : pos(0), rot(Quaternion::IDENTITY), scale(1) {}
 			TransformInfo(const TransformInfo& ot) : pos(ot.pos), rot(ot.rot), scale(ot.scale) {}
 			inline TransformInfo& operator = (const TransformInfo& ot) { pos = ot.pos, rot = ot.rot, scale = ot.scale; return *this; }
 		};

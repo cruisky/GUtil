@@ -29,7 +29,7 @@ namespace TX{
 	}
 
 	Transform& Transform::Scale(const Vec3& scale){
-		data_.scale = Math::Max(data_.scale * scale, Vec3(Math::MIN));
+		data_.scale = Math::Max(data_.scale * scale, Vec3((float)Math::MIN));
 		MarkDirty();
 		return *this;
 	}

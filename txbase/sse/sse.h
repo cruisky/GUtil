@@ -1,8 +1,13 @@
 #pragma once
 
 #include "txbase/fwddecl.h"
-#include <intrin.h>
-//#include <smmintrin.h>
+
+#ifdef _MSC_VER
+	#include <intrin.h>
+#else
+	#include <smmintrin.h>
+	#include <xmmintrin.h>
+#endif
 
 #include "txbase/sse/bool.h"
 #include "txbase/sse/int.h"

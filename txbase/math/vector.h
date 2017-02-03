@@ -330,7 +330,7 @@ namespace TX
 
 	namespace Math {
 		template <typename T>
-		inline Vec<4, T> Abs(const Vec<4, T>& v) { return Vec4(Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w)); }
+		inline Vec<4, T> Abs(const Vec<4, T>& v) { return Vec<4, T>(Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w)); }
 		template <typename T>
 		inline T Dot(const Vec<4, T>& u, const Vec<4, T>& v) { return u.x * v.x + u.y * v.y + u.z * v.z + u.w * v.w; }
 		template <typename T>

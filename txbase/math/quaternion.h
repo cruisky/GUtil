@@ -7,14 +7,8 @@ namespace TX
 	class Quaternion {
 	public:
 		union {
-			struct { Vec4 q; };
-			struct {
-				union {
-					struct { Vec3 xyz; };
-					struct { float x, y, z; };
-				};
-				float w;
-			};
+			Vec4 q;
+			struct { float x, y, z, w; };
 		};
 		static constexpr float EPSILON = 1e-6f;
 		static Quaternion IDENTITY;
@@ -22,7 +16,7 @@ namespace TX
 		Quaternion() : q(Math::ZERO, Math::ZERO, Math::ZERO, Math::ONE){}
 		Quaternion(const Quaternion& ot) : q(ot.q) {}
 		Quaternion(float x, float y, float z, float w) : q(x, y, z, w) {}
-		Quaternion(const Vec3& v, float w) : xyz(v), w(w) {}
+		Quaternion(const Vec3& v, float w) : x(v.x), y(v.y), z(v.z), w(w) {}
 		Quaternion& operator = (const Quaternion& ot) { q = ot.q; return *this; }
 		explicit Quaternion(const Vec4& v) : q(v){}
 
@@ -48,7 +42,7 @@ namespace TX
 		inline Quaternion& operator /= (float s) { q /= s; return *this; }
 
 		inline float Norm() const { return Math::Length(q); }
-		inline Quaternion Conjugate() const { return Quaternion(-xyz, w); }
+		inline Quaternion Conjugate() const { return Quaternion(-x, -y, -z, w); }
 		inline Quaternion Inverse() const { return Conjugate() / Norm(); }
 
 		inline Vec3 Rotate(const Vec3& v) const {

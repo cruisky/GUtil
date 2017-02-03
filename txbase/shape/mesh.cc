@@ -1,4 +1,5 @@
 #include "txbase/stdafx.h"
+
 #include "mesh.h"
 #include "obj.h"
 #include "txbase/math/sample.h"
@@ -231,7 +232,7 @@ namespace TX {
 		Vec3 normal;
 		mesh->GetPoint(triId, 0.f, 0.f, nullptr, &normal);
 		float pdf = wi.t_max * wi.t_max / (Math::AbsDot(normal, wi.dir) * sumArea);		// solid angle measure
-		return Math::IsINF(pdf) ? 0.f : pdf;
+		return std::isinf(pdf) ? 0.f : pdf;
 	}
 	float MeshSampler::Pdf(uint triId, const Vec3& point) const {
 		return sumAreaRcp;

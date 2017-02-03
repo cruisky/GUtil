@@ -1,4 +1,5 @@
 #include "txbase/stdafx.h"
+
 #include "sample.h"
 
 namespace TX{
@@ -29,7 +30,7 @@ namespace TX{
 
 	Distribution1D::Distribution1D(const float *f, uint n) : count(n) {
 		func = new float[n];
-		memcpy_s(func, n*sizeof(float), f, n*sizeof(float));
+		std::memcpy(func, f, n*sizeof(float));
 
 		// calculate cdf
 		cdf = new float[n + 1];

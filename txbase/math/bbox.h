@@ -5,10 +5,7 @@
 namespace TX {
 	class BBox {
 	public:
-		union {
-			struct{ Vec3 min, max; };
-			Vec3 bounds[2];
-		};
+		Vec3 min, max;
 
 	public:
 		BBox() : min(Math::INF), max(-Math::INF) {}
@@ -19,8 +16,8 @@ namespace TX {
 			max(Math::Max(p1, p2)){}
 
 		inline BBox& operator = (const BBox& ot) { min = ot.min; max = ot.max; return *this; }
-		inline const Vec3& operator [] (size_t idx) const { assert(idx < 2); return bounds[idx]; }
-		inline		 Vec3& operator [] (size_t idx)		  { assert(idx < 2); return bounds[idx]; }
+		inline const Vec3& operator [] (size_t idx) const { return (&min)[idx]; }
+		inline		 Vec3& operator [] (size_t idx)		  { return (&min)[idx]; }
 
 		inline bool operator == (const BBox& ot) const { return min == ot.min && max == ot.max; }
 		inline bool operator != (const BBox& ot) const { return min != ot.min || max != ot.max; }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "txbase/fwddecl.h"
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include "txbase/shape/obj.h"
 #include "txbase/sys/memory.h"
 

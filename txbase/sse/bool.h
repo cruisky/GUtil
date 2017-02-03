@@ -1,7 +1,13 @@
 #pragma once
 
 #include "txbase/fwddecl.h"
-#include <intrin.h>
+
+#ifdef _MSC_VER
+	#include <intrin.h>
+#else
+	#include <smmintrin.h>
+	#include <xmmintrin.h>
+#endif
 
 #define LOOKUP_TABLE_PS(M) {	\
 	_mm_castsi128_ps(_mm_set_epi32(0, 0, 0, 0)),	\
@@ -23,20 +29,22 @@
 
 namespace TX
 {
-	#if defined(WIN32)
-		inline int __bsf(int v) { unsigned long r = 0; _BitScanForward(&r, v); return r; }
-		inline int __bsr(int v) { unsigned long r = 0; _BitScanReverse(&r, v); return r; }
-		inline int __btc(int v, int i) { long r = v; _bittestandcomplement(&r, i); return r; }
-		inline int __bts(int v, int i) { long r = v; _bittestandset(&r, i); return r; }
-		inline int __btr(int v, int i) { long r = v; _bittestandreset(&r, i); return r; }
-	#endif
-	#if defined(_WIN64)
-		inline size_t __bsf(size_t v) { size_t r = 0; _BitScanForward64((unsigned long*)&r, v); return r; }
-		inline size_t __bsr(size_t v) { size_t r = 0; _BitScanReverse64((unsigned long*)&r, v); return r; }
-		inline size_t __btc(size_t v, size_t i) { return v ^ (size_t(1) << i); }
-		inline size_t __bts(size_t v, size_t i) { __int64 r = v; _bittestandset64(&r, i); return r; }
-		inline size_t __btr(size_t v, size_t i) { __int64 r = v; _bittestandreset64(&r, i); return r; }
-	#endif
+#if defined(WIN32)
+	inline int __bsf(int v) { unsigned long r = 0; _BitScanForward(&r, v); return r; }
+	inline int __bsr(int v) { unsigned long r = 0; _BitScanReverse(&r, v); return r; }
+	//inline int __btc(int v, int i) { long r = v; _bittestandcomplement(&r, i); return r; }
+	//inline int __bts(int v, int i) { long r = v; _bittestandset(&r, i); return r; }
+	//inline int __btr(int v, int i) { long r = v; _bittestandreset(&r, i); return r; }
+#elif defined(_WIN64)
+	inline size_t __bsf(size_t v) { size_t r = 0; _BitScanForward64((unsigned long*)&r, v); return r; }
+	inline size_t __bsr(size_t v) { size_t r = 0; _BitScanReverse64((unsigned long*)&r, v); return r; }
+	//inline size_t __btc(size_t v, size_t i) { return v ^ (size_t(1) << i); }
+	//inline size_t __bts(size_t v, size_t i) { __int64 r = v; _bittestandset64(&r, i); return r; }
+	//inline size_t __btr(size_t v, size_t i) { __int64 r = v; _bittestandreset64(&r, i); return r; }
+#else
+	inline int __bsf(int v) { return __builtin_ctz(v) - 1; }
+	inline int __bsr(int v) { return 31 - __builtin_clz(v); }
+#endif
 
 	namespace SSE
 	{
@@ -47,8 +55,8 @@ namespace TX
 		public:
 			union{
 				__m128 m;
-				struct{ int32 x, y, z, w; };
-				int32 v[4];
+				struct{ int32_t x, y, z, w; };
+				int32_t v[4];
 			};
 		public:
 			inline V4Bool() :m(_mm_setzero_ps()) {}
@@ -65,7 +73,7 @@ namespace TX
 			inline operator       __m128&(void)       { return m; }
 
 			inline bool   operator [] (const size_t i) const { return (_mm_movemask_ps(m) >> i) & 1; }
-			inline int32& operator [] (const size_t i)       { return v[i]; }
+			inline int32_t& operator [] (const size_t i)       { return v[i]; }
 
 			inline const V4Bool operator ! () const { return _mm_xor_ps(*this, V4Bool(true)); }
 			inline const V4Bool operator & (const V4Bool& ot) const { return _mm_and_ps(*this, ot); }

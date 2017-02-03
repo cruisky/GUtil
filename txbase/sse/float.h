@@ -2,7 +2,14 @@
 
 #define USE_SSE2
 
-#include <intrin.h>
+
+#ifdef _MSC_VER
+	#include <intrin.h>
+#else
+	#include <smmintrin.h>
+	#include <xmmintrin.h>
+#endif
+
 #include "txbase/fwddecl.h"
 #include "txbase/math/base.h"
 #include "txbase/libs/sse_mathfun.h"
@@ -32,7 +39,7 @@ namespace TX {
 		public:
 			inline V4Float() : m(_mm_setzero_ps()) {}
 			inline V4Float(__m128 d) : m(d) {}
-			inline V4Float(const float& v) : m(_mm_broadcast_ss(&v)) {}
+			inline V4Float(const float& v) : m(_mm_set1_ps(v)) {}
 			inline V4Float(float a, float b) : m(_mm_setr_ps(a, b, a, b)) {}
 			inline V4Float(float a, float b, float c, float d) : m(_mm_setr_ps(a, b, c, d)) {}
 			inline explicit V4Float(const float *arr) : m(_mm_loadu_ps(arr)) {}
