@@ -12,6 +12,10 @@ matrix:
             - g++-5
       env: COMPILER=g++-5
 
+install:
+  - sudo apt-get update
+  - sudo apt-get install libglfw3 libglfw3-dev
+
 script:
   - mkdir build
   - cd build
