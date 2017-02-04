@@ -93,9 +93,13 @@ target_include_directories(${BUILD_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 ########## DEPENDENCIES
 
 # glfw3
-find_package(glfw3 REQUIRED)
+# http://www.glfw.org/docs/3.0/build.html#build_link_cmake_pkgconfig
+# find_package(glfw3 REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(GLFW REQUIRED glfw3)
+
 target_include_directories(${BUILD_TARGET} PUBLIC ${GLFW_INCLUDE_DIRS})
-target_link_libraries(${BUILD_TARGET} glfw)
+target_link_libraries(${BUILD_TARGET} ${GLFW_STATIC_LIBRARIES})
 
 # opengl
 find_package(OpenGL REQUIRED)
