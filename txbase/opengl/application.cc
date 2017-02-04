@@ -43,9 +43,8 @@ namespace TX {
 
 			std::printf("OpenGL: \t%s\n", GetVersion());
 
-			auto glewError = glewInit();
-			if (glewError != GLEW_OK) {
-				fprintf(stderr, "glewInit failed: %s\n", glewGetErrorString(glewError));
+			if (gl3wInit()) {
+				std::cerr << "gl3wInit failed." << std::endl;
 				throw std::runtime_error("");
 			}
 

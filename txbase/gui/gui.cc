@@ -385,9 +385,6 @@ namespace TX { namespace UI { namespace GUI {
 	}
 
 	void BeginFrame(Input& input){
-		glPushAttrib(GL_ENABLE_BIT);
-		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-
 		G.inputPtr = &input;
 		G.input = input;
 		G.cursorBackup = InvalidCursor;
@@ -480,8 +477,6 @@ namespace TX { namespace UI { namespace GUI {
 
 		// restore program & settings
 		glUseProgram(lastProgram);
-		glPopClientAttrib();
-		glPopAttrib();
 	}
 	//	+---------------------------------------+
 	//  |                 1                     |

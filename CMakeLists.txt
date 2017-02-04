@@ -92,13 +92,16 @@ target_include_directories(${BUILD_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 ########## DEPENDENCIES
 
+# gl3w: dependency of imgui and the app
+add_subdirectory(txbase/libs/gl3w)
+target_link_libraries(${BUILD_TARGET} gl3w)
+
 # glfw3
 # http://www.glfw.org/docs/3.0/build.html#build_link_cmake_pkgconfig
 # find_package(glfw3 REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 
-target_include_directories(${BUILD_TARGET} PUBLIC ${GLFW_INCLUDE_DIRS})
 target_link_libraries(${BUILD_TARGET} ${GLFW_STATIC_LIBRARIES})
 
 # opengl
