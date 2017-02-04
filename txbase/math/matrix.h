@@ -100,6 +100,7 @@ namespace TX{
 
 		inline Matrix3x3 Inverse() const {
 			//TODO
+			return Matrix3x3();
 		}
 	};
 

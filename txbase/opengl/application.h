@@ -49,13 +49,14 @@ namespace TX {
 			float				GetDeltaTime();
 			float				GetFrameRate();
 			void				GetCursorPos(float *x, float *y);
-			void				Refresh();
+// 			void				Refresh();
 			bool				IsWindowVisible();
 			void				Exit();
 		private:
 			static Application * This(GLFWwindow *window);
 			static void GLFWKey(GLFWwindow *window, int key, int scancode, int action, int mods);
-			static void GLFWCharMods(GLFWwindow *window, uint codepoint, int mods);
+			static void GLFWChar(GLFWwindow *window, uint codepoint);
+// 			static void GLFWCharMods(GLFWwindow *window, uint codepoint, int mods);
 			static void GLFWCursorPos(GLFWwindow *window, double x, double y);
 			static void GLFWMouseButton(GLFWwindow *window, int b, int s, int mods);
 			static void GLFWMouseScroll(GLFWwindow *window, double xoff, double yoff);

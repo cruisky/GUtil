@@ -75,7 +75,7 @@ namespace TX{
 	public:
 		float *func, *cdf;		// samples and cumulative distro function
 		float funcInt;			// integral
-		int count;
+		uint count;
 	public:
 		/// <summary>
 		/// Constructor of Distribution1D.

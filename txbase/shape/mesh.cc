@@ -73,7 +73,7 @@ namespace TX {
 		if (!Math::InBounds(u, 0.f, 1.f))
 			return false;
 		const Vec3 Q = Math::Cross(T, e1);
-		const float v = Math::Dot(ray.dir, Q) * invDet;
+// 		const float v = Math::Dot(ray.dir, Q) * invDet;
 
 		return Math::InBounds(Math::Dot(e2, Q) * invDet, ray.t_min, ray.t_max);
 	}

@@ -89,8 +89,8 @@ namespace TX
 		std::vector<char *> used, available;
 	public:
 		MemoryArena(uint blockSize = 32768) :
-			blockSize(blockSize),
-			currBlockPos(0){
+			currBlockPos(0),
+			blockSize(blockSize){
 			currBlock = AllocAligned<char>(blockSize);
 		}
 		~MemoryArena() {

@@ -13,7 +13,7 @@ namespace TX{
 	}
 
 
-	CameraSample::CameraSample(int bufsize) : offset_(0), bufsize(bufsize), buffer(new Sample[bufsize]){}
+	CameraSample::CameraSample(int bufsize) : bufsize(bufsize), offset_(0), buffer(new Sample[bufsize]){}
 	CameraSample::CameraSample(const CameraSample& ot)
 		: offset_(0), bufsize(ot.bufsize), buffer(new Sample[ot.bufsize]){
 		std::memcpy(buffer, ot.buffer, bufsize * sizeof(Sample));

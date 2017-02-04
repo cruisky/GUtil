@@ -29,8 +29,8 @@ namespace TX { namespace UI { namespace GUI {
 			id(id),
 			accessed(false),
 			folded(false),
-			scroll(0.f),
-			contentHeight(1.f){}
+			contentHeight(1.f),
+			scroll(0.f){}
 	};
 
 	// Ids that uniquely identify a widget inside a window
@@ -616,7 +616,6 @@ namespace TX { namespace UI { namespace GUI {
 			body.max.x - padding,
 			body.max.y);
 		float scrollRectHeight = scrollRect.Height();
-		float scrollRectCenterY = scrollRect.min.y + scrollRectHeight * 0.5f;
 		ScrollBar(scrollBarArea, scrollRectHeight, W->contentHeight, W->scroll);
 
 		float contentOffset = (W->contentHeight > scrollRectHeight) ? W->scroll * (W->contentHeight - scrollRectHeight) : 0.f;
@@ -1084,6 +1083,8 @@ namespace TX { namespace UI { namespace GUI {
 						break;
 					case KeyCode::X:
 						changed |= G.textEdit.CutSelection();
+						break;
+					default:
 						break;
 					}
 				}

@@ -25,9 +25,10 @@ namespace TX{
 	public:
 		Transform() :
 			data_(),
+			dirty_(false),
 			local_world_(Matrix4x4::IDENTITY),
-			world_local_(Matrix4x4::IDENTITY),
-			dirty_(false) {}
+			world_local_(Matrix4x4::IDENTITY)
+			{}
 		Transform(const Transform& ot) :
 			data_(ot.data_),
 			dirty_(true) {}
