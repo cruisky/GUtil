@@ -2,8 +2,10 @@ cmake_minimum_required (VERSION 3.2)
 
 project(txbase)
 
-set(CMAKE_CXX_STANDARD 14)
 # set(CMAKE_VERBOSE_MAKEFILE 1)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3")
 
 set(BUILD_TARGET txbase)
 
@@ -94,7 +96,6 @@ target_include_directories(${BUILD_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # gl3w: dependency of imgui and the app
 add_subdirectory(txbase/libs/gl3w)
-target_link_libraries(${BUILD_TARGET} gl3w)
 
 # glfw3
 # http://www.glfw.org/docs/3.0/build.html#build_link_cmake_pkgconfig
@@ -107,7 +108,8 @@ target_link_libraries(${BUILD_TARGET} ${GLFW_STATIC_LIBRARIES})
 # opengl
 find_package(OpenGL REQUIRED)
 target_include_directories(${BUILD_TARGET} PUBLIC ${OPENGL_INCLUDE_DIRS})
+
 target_link_libraries(${BUILD_TARGET}
 	${OPENGL_LIBRARIES}
-	#${CMAKE_DL_LIBS}
+	gl3w
 )

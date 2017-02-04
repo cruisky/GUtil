@@ -12,6 +12,10 @@ matrix:
           packages:
             - g++-5
             - libglfw3
+            - libxrandr-dev
+            - libxcursor-dev
+            - libxi-dev
+            - libxinerama-dev
             - libglfw3-dev
       env: COMPILER=g++-5
 
