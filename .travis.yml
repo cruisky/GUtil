@@ -8,13 +8,12 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - sourceline: 'ppa:keithw/glfw3'
           packages:
             - g++-5
+            - libglfw3
+            - libglfw3-dev
       env: COMPILER=g++-5
-
-install:
-  - sudo apt-get update
-  - sudo apt-get install libglfw3 libglfw3-dev
 
 script:
   - mkdir build
