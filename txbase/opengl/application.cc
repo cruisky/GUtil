@@ -31,7 +31,8 @@ namespace TX {
 			glfwSwapInterval(1);
 
 			glfwSetKeyCallback(window, GLFWKey);
-			glfwSetCharModsCallback(window, GLFWCharMods);
+// 			glfwSetCharModsCallback(window, GLFWCharMods); // 3.1
+			glfwSetCharCallback(window, GLFWChar); // 3.1
 			glfwSetCursorPosCallback(window, GLFWCursorPos);
 			glfwSetMouseButtonCallback(window, GLFWMouseButton);
 			glfwSetScrollCallback(window, GLFWMouseScroll);
@@ -43,9 +44,8 @@ namespace TX {
 
 			std::printf("OpenGL: \t%s\n", GetVersion());
 
-			auto glewError = glewInit();
-			if (glewError != GLEW_OK) {
-				fprintf(stderr, "glewInit failed: %s\n", glewGetErrorString(glewError));
+			if (gl3wInit()) {
+				std::cerr << "gl3wInit failed." << std::endl;
 				throw std::runtime_error("");
 			}
 
@@ -79,7 +79,7 @@ namespace TX {
 		float				Application::GetDeltaTime() { return deltaTime; };
 		float				Application::GetFrameRate() { return fps; }
 		void				Application::GetCursorPos(float *x, float *y) { double dx, dy; glfwGetCursorPos(window, &dx, &dy); *x = float(dx); *y = float(dy); }
-		void				Application::Refresh() { glfwPostEmptyEvent(); }
+// 		void				Application::Refresh() { glfwPostEmptyEvent(); }	// GLFW 3.1
 		bool				Application::IsWindowVisible() { return glfwGetWindowAttrib(window, GLFW_VISIBLE); }
 		void				Application::Exit() { glfwSetWindowShouldClose(window, GL_TRUE); }
 
@@ -87,9 +87,14 @@ namespace TX {
 		void Application::GLFWKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
 			This(window)->OnKey(KeyCode(key), KeyState(action), mods);
 		}
-		void Application::GLFWCharMods(GLFWwindow *window, uint codepoint, int mods) {
-			This(window)->OnText(codepoint, mods);
+
+		// TODO replace with GLFWCharMods in 3.1
+		void Application::GLFWChar(GLFWwindow *window, uint codepoint) {
+			This(window)->OnText(codepoint, 0);
 		}
+// 		void Application::GLFWCharMods(GLFWwindow *window, uint codepoint, int mods) {
+// 			This(window)->OnText(codepoint, mods);
+// 		}
 		void Application::GLFWCursorPos(GLFWwindow *window, double x, double y) {
 			This(window)->OnMouseMove(float(x), float(y));
 		}

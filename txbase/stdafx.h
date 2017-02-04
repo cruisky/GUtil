@@ -18,5 +18,5 @@
 #include <limits>
 #include <functional>
 
-#include <GL/glew.h>
+#include <GL/gl3w.h>
 #include <GLFW/glfw3.h>

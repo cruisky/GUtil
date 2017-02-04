@@ -7,9 +7,16 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-rest
+            - ubuntu-toolchain-r-test
+            - sourceline: 'ppa:keithw/glfw3'
           packages:
             - g++-5
+            - libglfw3
+            - libxrandr-dev
+            - libxcursor-dev
+            - libxi-dev
+            - libxinerama-dev
+            - libglfw3-dev
       env: COMPILER=g++-5
 
 script:

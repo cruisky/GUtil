@@ -50,7 +50,7 @@ namespace TX
 	};
 
 	inline std::ostream& operator << (std::ostream& os, const Rect& rect){
-		os << rect.min << " - " << rect.max;
+		return os << rect.min << " - " << rect.max;
 	}
 
 	/// <summary>

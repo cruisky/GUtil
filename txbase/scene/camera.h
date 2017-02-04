@@ -60,10 +60,10 @@ namespace TX
 		inline void UpdateViewport();
 
 	private:
-		bool is_ortho_;
 		int width_, height_;
-		float clip_near_, clip_far_;
 		float fov_;
+		float clip_near_, clip_far_;
+		bool is_ortho_;
 
 		Matrix4x4 cam_viewport_;
 		Matrix4x4 viewport_screen_;

@@ -7,6 +7,8 @@ namespace TX {
 
 	class ObjMaterial {
 	public:
+		std::string		name;
+
 		Color			ambient;
 		Color			diffuse;
 		Color			specular;
@@ -16,7 +18,6 @@ namespace TX {
 		float			ior;
 		float			dissolve;
 
-		std::string		name;
 		std::string		texAmbient;
 		std::string		texDiffuse;
 		std::string		texSpecular;
