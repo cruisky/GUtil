@@ -42,7 +42,7 @@ namespace TX{
 			Task() : func(nullptr), args(nullptr){}
 			Task(Func func, void *args) : func(func), args(args){}
 			Task(const Task& other) : func(other.func), args(other.args){}
-			inline Task& operator = (const Task& other) { this->func = other.func; this->args = other.args; }
+			inline Task& operator = (const Task& other) { this->func = other.func; this->args = other.args; return *this; }
 
 			inline void Run(int id){ func(args, id); }
 		private:

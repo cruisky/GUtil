@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.2)
 project(txbase)
 
 # set(CMAKE_VERBOSE_MAKEFILE 1)
-
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3")
 
@@ -111,10 +111,8 @@ target_include_directories(${BUILD_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(txbase/libs/gl3w)
 
 # glfw3
-# http://www.glfw.org/docs/3.0/build.html#build_link_cmake_pkgconfig
 # find_package(glfw3 REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_search_module(GLFW REQUIRED glfw3)
+find_package(glfw3 REQUIRED)
 
 target_link_libraries(${BUILD_TARGET} ${GLFW_STATIC_LIBRARIES})
 

@@ -11,7 +11,7 @@ namespace TX{
 		RNG(uint32_t seed = (uint32_t)time(NULL)){
 #ifdef _MSC_VER
 
-			cur_seed_ = (__m128i *) AllocAligned(sizeof __m128i, 16);
+			cur_seed_ = AllocAligned<__m128i>(sizeof __m128i, 16);
 			if (!cur_seed_) throw std::runtime_error("out of memory");
 			*cur_seed_ = _mm_set_epi32(seed, seed + 1, seed, seed + 1);
 #else
@@ -29,7 +29,7 @@ namespace TX{
 
 		inline uint32_t UInt(){
 #ifdef _MSC_VER
-			__declspec(align(16)) uint32 result[4];
+			__declspec(align(16)) uint32_t result[4];
 			__declspec(align(16)) __m128i cur_seed_split;
 			__declspec(align(16)) __m128i multiplier;
 			__declspec(align(16)) __m128i adder;

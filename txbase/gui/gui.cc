@@ -1091,7 +1091,7 @@ namespace TX { namespace UI { namespace GUI {
 
 				// keys that work regardless of the modifier
 				switch (G.input.key){
-				case KeyCode::DELETE:
+				case KeyCode::DEL:
 					if (!G.textEdit.HasSelection() && G.input.mods(Modifiers::CTRL))
 						G.textEdit.Select(G.textEdit.cursor, G.textEdit.AdvanceWords(1));
 					changed |= G.textEdit.Del();

@@ -20,7 +20,7 @@ namespace TX {
 			float linearAttenuation;
 			float quadraticAttenuation;
 			LightSource() :
-				ambient(0.4, 0.4, 0.4, 1),
+				ambient(0.4f, 0.4f, 0.4f, 1.f),
 				diffuse(Color::WHITE),
 				specular(Color::WHITE),
 				position(0, 0, 1, 0),

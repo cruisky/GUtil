@@ -2,6 +2,22 @@
 [Tt]humbs.db
 *.DS_Store
 
+#CMake files
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+#Visual Studio project
+*.sln
+*.vcxproj
+*.vcxproj.filters
+
 #Visual Studio files
 *.user
 *.aps

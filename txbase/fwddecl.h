@@ -9,6 +9,8 @@
 #include <iostream>
 #include <cstdint>
 
+typedef uint32_t uint;
+
 namespace TX
 {
 	class Filter;

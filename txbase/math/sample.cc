@@ -35,7 +35,7 @@ namespace TX{
 		// calculate cdf
 		cdf = new float[n + 1];
 		cdf[0] = 0.f;
-		for (int i = 1; i < count + 1; i++)
+		for (uint i = 1; i < count + 1; i++)
 			cdf[i] = cdf[i - 1] + func[i - 1];
 
 		// normalize cdf
