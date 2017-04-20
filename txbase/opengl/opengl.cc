@@ -26,9 +26,7 @@ namespace TX
 				throw "Failed to compile shader";
 			}
 		}
-		Shader::~Shader(){
-			glDeleteShader(id);
-		}
+		Shader::~Shader(){ if(id) glDeleteShader(id); }
 		std::string Shader::GetLog(){
 			GLint length;
 			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
@@ -42,9 +40,7 @@ namespace TX
 		Program::Program(){
 			id = glCreateProgram();
 		}
-		Program::~Program(){
-			glDeleteProgram(id);
-		}
+		Program::~Program(){ if(id) glDeleteProgram(id); }
 		void Program::Use() const { glUseProgram(id); }
 		void Program::Attach(const Shader& shader){
 			glAttachShader(id, shader);

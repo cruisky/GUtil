@@ -1,4 +1,5 @@
 #pragma once
+// IMPORTANT: include this header before any gl.h or windows.h, as required by gl3w.h
 
 #include "txbase/fwddecl.h"
 #include <GL/gl3w.h>
@@ -23,9 +24,14 @@ namespace TX
 		void SetUniform(GLuint loc, const Matrix3x3& v, bool transpose = true);
 		void SetUniform(GLuint loc, const Matrix4x4& v, bool transpose = true);
 
-		class Object {
+		class Object : public NonCopyable {
 		public:
 			GLuint id;
+			Object(): id(0){}
+			Object(Object&& that){
+				id = that.id;
+				that.id = 0;
+			}
 			inline operator GLuint() const { return id; }
 		};
 
@@ -33,30 +39,42 @@ namespace TX
 		class Buffer : public Object {
 		public:
 			Buffer(){ glGenBuffers(1, &id); }
-			~Buffer(){ glDeleteBuffers(1, &id); }
-			void Data(GLsizeiptr size, const void *data){
+			Buffer(Buffer&& that) : Object(std::move(that)){}
+			~Buffer(){ if(id) glDeleteBuffers(1, &id); }
+			inline void Data(GLsizeiptr size, const void *data){
 				Bind();
 				glBufferData(Target, size, data, GL_STATIC_DRAW);
 			}
-			void Bind() const { glBindBuffer(Target, id); }
-			static void Unbind() { glBindBuffer(Target, 0); }
+			inline void Bind() const { glBindBuffer(Target, id); }
+			inline static void Unbind() { glBindBuffer(Target, 0); }
 		};
 		typedef Buffer<GL_ARRAY_BUFFER> VertexBuffer;
 		typedef Buffer<GL_ELEMENT_ARRAY_BUFFER> IndexBuffer;
 		typedef Buffer<GL_UNIFORM_BUFFER> UniformBuffer;
 		typedef Buffer<GL_TEXTURE_BUFFER> TextureBuffer;
 
+		class VertexArray : public Object {
+		public:
+			VertexArray() { glGenVertexArrays(1, &id); }
+			VertexArray(VertexArray&& that) : Object(std::move(that)){}
+			~VertexArray() { if(id) glDeleteVertexArrays(1, &id); }
+			inline void Bind() { glBindVertexArray(id); }
+			inline static void Unbind() { glBindVertexArray(0); }
+		};
+
 		class Shader : public Object {
 		public:
 			Shader(GLenum type, const char *source);
+			Shader(Shader&& that) : Object(std::move(that)){}
 			~Shader();
 
 			std::string GetLog();
 		};
 
-		class Program : public Object, public NonCopyable {
+		class Program : public Object {
 		public:
 			Program();
+			Program(Program&& that) : Object(std::move(that)){}
 			~Program();
 			void Use() const;
 			void Attach(const Shader& shader);
