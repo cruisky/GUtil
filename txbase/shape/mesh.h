@@ -75,6 +75,11 @@ namespace TX {
 		/// <param name="size"> Edge size </param>
 		Mesh& LoadPlane(float size = 1.f);
 		/// <summary>
+		/// Load a cube to this mesh.
+		/// </summary>
+		/// <param name="size"> Edge size </param>
+		Mesh& LoadCube(float size = 1.f);
+		/// <summary>
 		/// Apply a transform to this mesh.
 		/// </summary>
 		virtual void ApplyTransform(const Transform& transform);

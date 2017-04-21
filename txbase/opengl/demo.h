@@ -2,16 +2,19 @@
 
 #include "opengl.h"
 #include <GLFW/glfw3.h>
+#include <txbase/math/matrix.h>
+#include <txbase/shape/mesh.h>
+#include <txbase/scene/camera.h>
 
 namespace TX {
 	namespace GL {
-		class Demo {
+		class Demo2D {
 		public:
 			Program program;
 			VertexBuffer vbo;
 			VertexArray vao;
 		public:
-			Demo() {
+			Demo2D() {
 				GLfloat verts[] = {
 					-0.4f, -0.3f, 0.0f,
 					0.4f, -0.3f, 0.0f,
@@ -20,8 +23,8 @@ namespace TX {
 				vao.Bind();
 				vbo.Bind();
 				vbo.Data(sizeof(verts), verts);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
-				glEnableVertexAttribArray(0);
+				glEnableVertexAttribArray(ATTRIB_POS);
+				glVertexAttribPointer(ATTRIB_POS, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
 				vao.Unbind();
 
 				Shader vs(GL_VERTEX_SHADER,
@@ -67,6 +70,155 @@ namespace TX {
 				vao.Bind();
 				glDrawArrays(GL_TRIANGLES, 0, 3);
 				vao.Unbind();
+			}
+		};
+
+		class Demo3DPlane {
+		public:
+			Program program;
+			VertexBuffer vboVerts;
+			VertexBuffer vboNorms;
+			VertexArray vao;
+			IndexBuffer ebo;
+		public:
+			Demo3DPlane()
+			{
+				GLfloat verts[] = {
+					-1.f, -1.f, 0.0f,
+					1.f, -1.f, 0.0f,
+					-1.f, 1.f, 0.0f,
+					1.f, 1.f, 0.0f
+				};
+				GLfloat normals[] = {
+					-0.7f, -0.7f, 0.1f,
+					0.7f, -0.7f, 0.1f,
+					-0.7f, 0.7f, 0.1f,
+					0.7f, 0.7f, 0.1f
+				};
+				GLuint indices[] = {
+					0, 1, 2,
+					2, 1, 3
+				};
+				vao.Bind();
+					vboVerts.Data(sizeof(verts), verts);
+					glEnableVertexAttribArray(ATTRIB_POS);
+					glVertexAttribPointer(ATTRIB_POS, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
+					vboNorms.Data(sizeof(normals), normals);
+					glEnableVertexAttribArray(ATTRIB_NORMAL);
+					glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
+					ebo.Data(sizeof(indices), indices);
+				vao.Unbind();
+
+				// Shaders
+				Shader vs(GL_VERTEX_SHADER,
+				R"(
+					#version 330 core
+					layout (location = 0) in vec3 position;
+					layout (location = 1) in vec3 normal;
+					uniform mat4 iModel;
+					uniform mat4 iView;
+					uniform mat4 iProj;
+					out vec3 norm;
+					void main()
+					{
+						gl_Position = iProj * iView * iModel * vec4(position, 1.0f);
+						norm = normal;
+					}
+				)");
+				Shader fs(GL_FRAGMENT_SHADER,
+				R"(
+					#version 330 core
+					in vec3 norm;
+					out vec4 color;
+					void main()
+					{
+						color = vec4(norm, 1.);
+					}
+				)");
+				program.Attach(vs);
+				program.Attach(fs);
+				program.Link();
+				program.Detach(vs);
+				program.Detach(fs);
+			}
+
+			inline void Draw(const Camera& camera){
+				glEnable(GL_CULL_FACE);
+				glFrontFace(GL_CCW);
+				glEnable(GL_DEPTH_TEST);
+				glDepthFunc(GL_LEQUAL);
+
+				program.Use();
+				program.SetUniform("iModel", Matrix4x4::IDENTITY);
+				program.SetUniform("iView", camera.transform.WorldToLocalMatrix());
+				program.SetUniform("iProj", camera.CameraToViewport());
+
+				vao.Bind();
+				int size; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+				glDrawElements(
+					GL_TRIANGLES,
+					size / sizeof(GLuint),
+					GL_UNSIGNED_INT,
+					(void *)0
+				);
+
+				vao.Unbind();
+			}
+		};
+
+		class Demo3DMesh {
+		public:
+			Program program;
+			Mesh glObj;
+		public:
+			Demo3DMesh(const TX::Mesh& mesh){
+				glObj.Upload(mesh);
+
+				// Shaders
+				Shader vs(GL_VERTEX_SHADER,
+				R"(
+					#version 330 core
+					layout (location = 0) in vec3 position;
+					layout (location = 1) in vec3 normal;
+					uniform mat4 iModel;
+					uniform mat4 iView;
+					uniform mat4 iProj;
+					out vec3 norm;
+					void main()
+					{
+						gl_Position = iProj * iView * iModel * vec4(position, 1.0f);
+						norm = normal;
+					}
+				)");
+				Shader fs(GL_FRAGMENT_SHADER,
+				R"(
+					#version 330 core
+					in vec3 norm;
+					out vec4 color;
+					void main()
+					{
+						color = vec4((norm+1.)*.5, 1.);
+					}
+				)");
+				program.Attach(vs);
+				program.Attach(fs);
+				program.Link();
+				program.Detach(vs);
+				program.Detach(fs);
+			}
+
+			void Draw(Camera& camera){
+				glEnable(GL_CULL_FACE);
+				glFrontFace(GL_CCW);
+				glEnable(GL_DEPTH_TEST);
+				glDepthFunc(GL_LEQUAL);
+
+				program.Use();
+				program.SetUniform("iModel", Matrix4x4::IDENTITY);
+				program.SetUniform("iView", camera.transform.WorldToLocalMatrix());
+				program.SetUniform("iProj", camera.CameraToViewport());
+
+				glObj.Draw();
 			}
 		};
 	}

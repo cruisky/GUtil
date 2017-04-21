@@ -77,27 +77,36 @@ namespace TX
 		}
 
 		void Mesh::Upload(const TX::Mesh& mesh){
+			vao.Bind();
 			if (mesh.vertices.size() > 0){
 				vertices.Data(mesh.vertices.size() * sizeof(mesh.vertices[0]), mesh.vertices.data());
+				glEnableVertexAttribArray(ATTRIB_POS);
+				glVertexAttribPointer(ATTRIB_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			}
 			if (mesh.normals.size() > 0){
 				normals.Data(mesh.normals.size() * sizeof(mesh.normals[0]), mesh.normals.data());
+				glEnableVertexAttribArray(ATTRIB_NORMAL);
+				glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			}
 			if (mesh.indices.size() > 0){
 				indices.Data(mesh.indices.size() * sizeof(mesh.indices[0]), mesh.indices.data());
 			}
+			vao.Unbind();
 		}
 
 		void Mesh::Draw() const {
-			vertices.Bind();
-			glVertexAttribPointer(ATTRIB_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
+			// https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
 
-			normals.Bind();
-			glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-			indices.Bind();
+			vao.Bind();
 			int size; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-			glDrawElements(GL_TRIANGLES, size / sizeof(uint), GL_UNSIGNED_INT, 0);
+			glDrawElements(
+				GL_TRIANGLES, 			// mode
+				size / sizeof(uint),	// count
+				GL_UNSIGNED_INT, 		// type
+				(void *)0				// offset
+			);
+			vao.Unbind();
 		}
 	}
 }

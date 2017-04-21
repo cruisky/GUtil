@@ -202,6 +202,56 @@ namespace TX {
 		return *this;
 	}
 
+	Mesh& Mesh::LoadCube(float size) {
+		Clear();
+		const float hs = size / 2;
+
+		vertices.reserve(6 * 4);
+		normals.reserve(6 * 4);
+		vertices.emplace_back(+hs, +hs, +hs);	// +X face
+		vertices.emplace_back(+hs, +hs, -hs);
+		vertices.emplace_back(+hs, -hs, +hs);
+		vertices.emplace_back(+hs, -hs, -hs);
+		for (uint i = 0; i < 4; i++) normals.push_back(Vec3::X);
+		vertices.emplace_back(-hs, +hs, -hs);	// -X face
+		vertices.emplace_back(-hs, +hs, +hs);
+		vertices.emplace_back(-hs, -hs, -hs);
+		vertices.emplace_back(-hs, -hs, +hs);
+		for (uint i = 0; i < 4; i++) normals.push_back(-Vec3::X);
+		vertices.emplace_back(-hs, +hs, -hs);	// +Y face
+		vertices.emplace_back(+hs, +hs, -hs);
+		vertices.emplace_back(-hs, +hs, +hs);
+		vertices.emplace_back(+hs, +hs, +hs);
+		for (uint i = 0; i < 4; i++) normals.push_back(Vec3::Y);
+		vertices.emplace_back(-hs, -hs, +hs);	// -Y face
+		vertices.emplace_back(+hs, -hs, +hs);
+		vertices.emplace_back(-hs, -hs, -hs);
+		vertices.emplace_back(+hs, -hs, -hs);
+		for (uint i = 0; i < 4; i++) normals.push_back(-Vec3::Y);
+		vertices.emplace_back(-hs, +hs, +hs);	// +Z face
+		vertices.emplace_back(+hs, +hs, +hs);
+		vertices.emplace_back(-hs, -hs, +hs);
+		vertices.emplace_back(+hs, -hs, +hs);
+		for (uint i = 0; i < 4; i++) normals.push_back(Vec3::Z);
+		vertices.emplace_back(+hs, +hs, -hs);	// -Z face
+		vertices.emplace_back(-hs, +hs, -hs);
+		vertices.emplace_back(+hs, -hs, -hs);
+		vertices.emplace_back(-hs, -hs, -hs);
+		for (uint i = 0; i < 4; i++) normals.push_back(-Vec3::Z);
+
+		indices.reserve(6 * 2 * 3);
+		for (uint f = 0; f < 6; f++) {
+			uint off = f * 4;
+			indices.push_back(off+0);
+			indices.push_back(off+2);
+			indices.push_back(off+1);
+			indices.push_back(off+1);
+			indices.push_back(off+2);
+			indices.push_back(off+3);
+		}
+		return *this;
+	}
+
 
 	MeshSampler::MeshSampler(std::shared_ptr<const Mesh> mesh) : mesh(mesh){
 		sumArea = 0.f;

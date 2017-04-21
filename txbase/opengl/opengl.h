@@ -58,7 +58,7 @@ namespace TX
 			VertexArray() { glGenVertexArrays(1, &id); }
 			VertexArray(VertexArray&& that) : Object(std::move(that)){}
 			~VertexArray() { if(id) glDeleteVertexArrays(1, &id); }
-			inline void Bind() { glBindVertexArray(id); }
+			inline void Bind() const { glBindVertexArray(id); }
 			inline static void Unbind() { glBindVertexArray(0); }
 		};
 
@@ -97,6 +97,7 @@ namespace TX
 			VertexBuffer vertices;
 			VertexBuffer normals;
 			IndexBuffer indices;
+			VertexArray vao;
 		public:
 			Mesh(){}
 			void Upload(const TX::Mesh& mesh);

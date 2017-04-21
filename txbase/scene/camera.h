@@ -6,7 +6,7 @@ namespace TX
 {
 	class Camera {
 	public:
-		Camera(int width, int height, float fov = 90.f, float near = 0.1f, float far = 1000.f, bool is_ortho = false);
+		Camera(int width=800, int height=600, float fov = 90.f, float near = 0.1f, float far = 1000.f, bool is_ortho = false);
 
 		void GenerateRay(Ray *out, float screenX, float screenY) const;
 
