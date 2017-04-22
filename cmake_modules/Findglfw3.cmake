@@ -1,14 +1,13 @@
 IF(WIN32)
-	message(STATUS "Win32")
 	FIND_PATH(GLFW3_INCLUDE_DIRS
 		NAMES GLFW/glfw3.h
-		PATHS $ENV{GLFW_ROOT}
+		PATHS $ENV{GLFW_ROOT} "C:/GLFW"
 		PATH_SUFFIXES include
 		DOC "GLFW include directory"
 		)
-	FIND_LIBRARY(GLFW3_LIBRARY
+	FIND_LIBRARY(GLFW3_LIBRARIES
 		NAMES glfw3
-		PATHS $ENV{GLFW_ROOT}
+		PATHS $ENV{GLFW_ROOT} "C:/GLFW"
 		PATH_SUFFIXES lib lib-vc2015
 		DOC "GLFW library directory"
 		)
@@ -20,7 +19,7 @@ ELSE(WIN32)
 			/usr/local/include
 		DOC "GLFW include directory"
 		)
-	FIND_LIBRARY(GLFW3_LIBRARY
+	FIND_LIBRARY(GLFW3_LIBRARIES
 		NAMES libGLFW.a GLFW libGLFW3.a GLFW3 libglfw.so libglfw.so.3 libglfw.so.3.0
 		PATHS
 			/usr/lib64
@@ -31,14 +30,14 @@ ELSE(WIN32)
 		)
 ENDIF(WIN32)
 
-message(STATUS "GLFW3 lib: ${GLFW3_LIBRARY}, include: ${GLFW3_INCLUDE_DIRS}")
+message(STATUS "GLFW3 lib: ${GLFW3_LIBRARIES}, include: ${GLFW3_INCLUDE_DIRS}")
 
-# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE
+# handle the QUIETLY and REQUIRED arguments and set {Name}_FOUND to TRUE
 # if all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(
 	glfw3 DEFAULT_MSG
-	GLFW3_LIBRARY
+	GLFW3_LIBRARIES
 	GLFW3_INCLUDE_DIRS)
 
 

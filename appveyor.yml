@@ -1,7 +1,7 @@
 version: 1.0.{build}
 environment:
   BUILD_PATH: build
-  GLFW_URL: https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
+  GLFW_URL: https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN32.zip
   GLFW_ROOT: C:/GLFW
 
   matrix:
