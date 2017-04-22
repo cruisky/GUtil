@@ -12,26 +12,26 @@ environment:
 
 install:
   - ps: |
-    if (!(Test-Path $GLFW_DIR))
-    {
-      New-Item -ItemType Directory -Force -Path $GLFW_DIR
-      Push-Location $GLFW_DIR
+      if (!(Test-Path $GLFW_DIR))
+      {
+        New-Item -ItemType Directory -Force -Path $GLFW_DIR
+        Push-Location $GLFW_DIR
 
-      appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
-      Invoke-Expression "7z.exe x glfw.zip" | Out-Null
+        appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
+        Invoke-Expression "7z.exe x glfw.zip" | Out-Null
 
-      Pop-Location
-    }
+        Pop-Location
+      }
 
 before_build:
   - ps: |
-    # mkdir
-    New-Item -ItemType Directory -Force -Path $env:BUILD_PATH
-    Push-Location $env:BUILD_PATH
-    # configure build
-    cmake -G "%GENERATOR%" ..
-    Pop-Location
+      # mkdir
+      New-Item -ItemType Directory -Force -Path $env:BUILD_PATH
+      Push-Location $env:BUILD_PATH
+      # configure build
+      cmake -G "%GENERATOR%" ..
+      Pop-Location
 
 build_script:
   - ps: |
-    cmake --build $env:BUILD_PATH --config "$($env:CONFIG)"
+      cmake --build $env:BUILD_PATH --config "$($env:CONFIG)"
