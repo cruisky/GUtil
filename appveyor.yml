@@ -5,12 +5,10 @@ environment:
   GLFW_DIR: C:/GLFW
 
   matrix:
-  fast_finish: true     # immediately finish build once one of the jobs fails.
-  allow_failures:
-    - GENERATOR: Visual Studio 14 2015
-      CONFIG: Debug
-    - GENERATOR: Visual Studio 14 2015
-      CONFIG: Release
+  - GENERATOR: Visual Studio 14 2015
+    CONFIG: Debug
+  - GENERATOR: Visual Studio 14 2015
+    CONFIG: Release
 
 install:
   - ps: |
