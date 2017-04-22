@@ -12,10 +12,10 @@ environment:
 
 install:
   - ps: |
-      if (!(Test-Path $GLFW_DIR))
+      if (!(Test-Path $env:GLFW_DIR))
       {
-        New-Item -ItemType Directory -Force -Path $GLFW_DIR
-        Push-Location $GLFW_DIR
+        New-Item -ItemType Directory -Force -Path $env:GLFW_DIR
+        Push-Location $env:GLFW_DIR
 
         appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
         Invoke-Expression "7z.exe x glfw.zip" | Out-Null
