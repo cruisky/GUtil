@@ -77,8 +77,30 @@ namespace TX
 			Program(Program&& that) : Object(std::move(that)){}
 			~Program();
 			void Use() const;
+			void Link();
 			void Attach(const Shader& shader);
 			void Detach(const Shader& shader);
+
+			template <class T, class... Ts>
+			inline void Attach(const T& first, const Ts&... rest){
+				Attach(first);
+				Attach(rest...);
+			}
+
+			template <class T, class... Ts>
+			inline void Detach(const T& first, const Ts&... rest){
+				Detach(first);
+				Detach(rest...);
+			}
+
+			template <class T, class... Ts>
+			inline void Compile(const T& first, const Ts&... rest){
+				Attach(first);
+				Attach(rest...);
+				Link();
+				Detach(first);
+				Detach(rest...);
+			}
 
 			inline GLuint GetUniformLoc(const char *name) const { return glGetUniformLocation(id, name); }
 
@@ -88,7 +110,6 @@ namespace TX
 			inline void SetUniform(const char *name, const Matrix4x4& v, bool transpose) const { GL::SetUniform(GetUniformLoc(name), v, transpose); }
 
 			void BindAttribLoc(const char *name, GLuint index);
-			void Link();
 			std::string GetLog();
 		};
 

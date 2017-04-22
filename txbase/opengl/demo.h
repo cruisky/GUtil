@@ -57,11 +57,7 @@ namespace TX {
 						color = vertexColor;
 					}
 				)");
-				program.Attach(vs);
-				program.Attach(fs);
-				program.Link();
-				program.Detach(vs);
-				program.Detach(fs);
+				program.Compile(vs, fs);
 			}
 
 			inline void Draw(){
@@ -135,11 +131,7 @@ namespace TX {
 						color = vec4(norm, 1.);
 					}
 				)");
-				program.Attach(vs);
-				program.Attach(fs);
-				program.Link();
-				program.Detach(vs);
-				program.Detach(fs);
+				program.Compile(vs, fs);
 			}
 
 			inline void Draw(const Camera& camera){
@@ -200,11 +192,7 @@ namespace TX {
 						color = vec4((norm+1.)*.5, 1.);
 					}
 				)");
-				program.Attach(vs);
-				program.Attach(fs);
-				program.Link();
-				program.Detach(vs);
-				program.Detach(fs);
+				program.Compile(vs, fs);
 			}
 
 			void Draw(Camera& camera){
