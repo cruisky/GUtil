@@ -18,9 +18,10 @@ install:
         Push-Location $env:GLFW_ROOT
 
         appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
-        Invoke-Expression "7z.exe x glfw.zip" | Out-Null
+        Invoke-Expression "7z.exe x glfw.zip"
 
         Pop-Location
+        Tree $env:GLFW_ROOT
       }
 
 before_build:
