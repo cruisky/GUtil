@@ -5,7 +5,6 @@ IF(WIN32)
 		PATHS
 			$ENV{GLFW_ROOT}
 			"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/"
-			"c:/GLFW"
 		PATH_SUFFIXES include
 		DOC "GLFW include directory"
 		)
@@ -14,7 +13,6 @@ IF(WIN32)
 		PATHS
 			$ENV{GLFW_ROOT}
 			"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/"
-			"c:/GLFW"
 		PATH_SUFFIXES lib
 		DOC "GLFW library directory"
 		)

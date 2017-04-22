@@ -2,7 +2,7 @@ version: 1.0.{build}
 environment:
   BUILD_PATH: build
   GLFW_URL: https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
-  GLFW_DIR: C:/GLFW
+  GLFW_ROOT: C:/GLFW
 
   matrix:
   - GENERATOR: Visual Studio 14 2015
@@ -12,10 +12,10 @@ environment:
 
 install:
   - ps: |
-      if (!(Test-Path $env:GLFW_DIR))
+      if (!(Test-Path $env:GLFW_ROOT))
       {
-        New-Item -ItemType Directory -Force -Path $env:GLFW_DIR
-        Push-Location $env:GLFW_DIR
+        New-Item -ItemType Directory -Force -Path $env:GLFW_ROOT
+        Push-Location $env:GLFW_ROOT
 
         appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
         Invoke-Expression "7z.exe x glfw.zip" | Out-Null
