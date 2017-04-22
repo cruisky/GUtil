@@ -1,12 +1,37 @@
 version: 1.0.{build}
 environment:
+  BUILD_PATH: build
+  GLFW_URL: https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
+  GLFW_DIR: C:/GLFW
+
   matrix:
   - GENERATOR: Visual Studio 14 2015
     CONFIG: Debug
   - GENERATOR: Visual Studio 14 2015
     CONFIG: Release
+
+install:
+  - ps: |
+    if (!(Test-Path $GLFW_DIR))
+    {
+      New-Item -ItemType Directory -Force -Path $GLFW_DIR
+      Push-Location $GLFW_DIR
+
+      appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
+      Invoke-Expression "7z.exe x glfw.zip" | Out-Null
+
+      Pop-Location
+    }
+
+before_build:
+  - ps: |
+    # mkdir
+    New-Item -ItemType Directory -Force -Path $env:BUILD_PATH
+    Push-Location $env:BUILD_PATH
+    # configure build
+    cmake -G "%GENERATOR%" ..
+    Pop-Location
+
 build_script:
-  - mkdir build
-  - cd build
-  - cmake -G "%GENERATOR%" ..
-  - cmake --build . --config %CONFIG%
+  - ps: |
+    cmake --build $env:BUILD_PATH --config "$($env:CONFIG)"
