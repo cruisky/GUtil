@@ -2,18 +2,14 @@ IF(WIN32)
 	message(STATUS "Win32")
 	FIND_PATH(GLFW3_INCLUDE_DIRS
 		NAMES GLFW/glfw3.h
-		PATHS
-			$ENV{GLFW_ROOT}
-			"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/"
+		PATHS $ENV{GLFW_ROOT}
 		PATH_SUFFIXES include
 		DOC "GLFW include directory"
 		)
 	FIND_LIBRARY(GLFW3_LIBRARY
 		NAMES glfw3
-		PATHS
-			$ENV{GLFW_ROOT}
-			"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/"
-		PATH_SUFFIXES lib
+		PATHS $ENV{GLFW_ROOT}
+		PATH_SUFFIXES lib lib-vc2015
 		DOC "GLFW library directory"
 		)
 ELSE(WIN32)
