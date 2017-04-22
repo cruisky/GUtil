@@ -1,28 +1,37 @@
 IF(WIN32)
 	message(STATUS "Win32")
-	FIND_PATH(GLFW3_INCLUDE_DIRS GLFW/glfw3.h
-		$ENV{GLFW_ROOT}/include
-		"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"
+	FIND_PATH(GLFW3_INCLUDE_DIRS
+		NAMES GLFW/glfw3.h
+		PATHS
+			$ENV{GLFW_ROOT}
+			"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/"
+			"c:/GLFW"
+		PATH_SUFFIXES include
+		DOC "GLFW include directory"
 		)
 	FIND_LIBRARY(GLFW3_LIBRARY
 		NAMES glfw3
 		PATHS
-		$ENV{GLFW_ROOT}/lib
-		$ENV{GLFW_ROOT}/lib-vc2015
-		"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/lib"
+			$ENV{GLFW_ROOT}
+			"c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/"
+			"c:/GLFW"
+		PATH_SUFFIXES lib
+		DOC "GLFW library directory"
 		)
 ELSE(WIN32)
-	FIND_PATH(GLFW3_INCLUDE_DIRS GLFW/glfw3.h
-		/usr/include
-		/usr/local/include
+	FIND_PATH(GLFW3_INCLUDE_DIRS
+		NAMES GLFW/glfw3.h
+		PATHS
+			/usr/include
+			/usr/local/include
 		)
 	FIND_LIBRARY(GLFW3_LIBRARY
 		NAMES libGLFW.a GLFW libGLFW3.a GLFW3 libglfw.so libglfw.so.3 libglfw.so.3.0
 		PATHS
-		/usr/lib64
-		/usr/lib
-		/usr/local/lib64
-		/usr/local/lib
+			/usr/lib64
+			/usr/lib
+			/usr/local/lib64
+			/usr/local/lib
 		)
 ENDIF(WIN32)
 
