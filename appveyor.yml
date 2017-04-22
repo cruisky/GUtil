@@ -29,7 +29,7 @@ before_build:
       New-Item -ItemType Directory -Force -Path $env:BUILD_PATH
       Push-Location $env:BUILD_PATH
       # configure build
-      cmake -G "$($env:GENERATOR)" ..
+      cmake -G "$($env:GENERATOR)" -D CMAKE_FIND_DEBUG_MODE=ON ..
       Pop-Location
 
 build_script:
