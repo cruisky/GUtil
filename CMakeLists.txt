@@ -8,8 +8,13 @@ include(CMakeToolsHelpers OPTIONAL)
 # set(CMAKE_VERBOSE_MAKEFILE 1)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3")
 
+if(MSVC)
+	add_definitions(/arch:SSE)
+	add_definitions(/arch:SSE2)
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3")
+endif()
 # http://stackoverflow.com/questions/2368811/how-to-set-warning-level-in-cmake
 # if(MSVC)
 #   # Force to always compile with W4
@@ -114,10 +119,8 @@ target_include_directories(${BUILD_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(txbase/libs/gl3w)
 
 # glfw3
-# find_package(glfw3 REQUIRED)
 find_package(glfw3 REQUIRED)
-
-target_link_libraries(${BUILD_TARGET} ${GLFW_STATIC_LIBRARIES})
+target_include_directories(${BUILD_TARGET} PUBLIC ${OPENGL_INCLUDE_DIRS})
 
 # opengl
 find_package(OpenGL REQUIRED)
@@ -126,4 +129,5 @@ target_include_directories(${BUILD_TARGET} PUBLIC ${OPENGL_INCLUDE_DIRS})
 target_link_libraries(${BUILD_TARGET}
 	${OPENGL_LIBRARIES}
 	gl3w
+	${GLFW3_LIBRARIES}
 )

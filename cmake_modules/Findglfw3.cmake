@@ -18,6 +18,7 @@ ELSE(WIN32)
 		PATHS
 			/usr/include
 			/usr/local/include
+		DOC "GLFW include directory"
 		)
 	FIND_LIBRARY(GLFW3_LIBRARY
 		NAMES libGLFW.a GLFW libGLFW3.a GLFW3 libglfw.so libglfw.so.3 libglfw.so.3.0
@@ -26,16 +27,18 @@ ELSE(WIN32)
 			/usr/lib
 			/usr/local/lib64
 			/usr/local/lib
+		DOC "GLFW library directory"
 		)
 ENDIF(WIN32)
 
-# message(STATUS "GLFW3 lib: ${GLFW3_LIBRARY}, include: ${GLFW3_INCLUDE_DIRS}")
+message(STATUS "GLFW3 lib: ${GLFW3_LIBRARY}, include: ${GLFW3_INCLUDE_DIRS}")
 
-IF(GLFW3_LIBRARY AND GLFW3_INCLUDE_DIRS)
-	SET(GLFW3_FOUND TRUE)
-	SET(GLFW_INCLUDE_DIRS ${GLFW3_INCLUDE_DIRS})
-	SET(GLFW_LIBRARY_DIRS ${GLFW3_LIBRARY})
-	message(STATUS "Found GLFW3: ${GLFW3_LIBRARY}")
-ELSE()
-	message(STATUS "GLFW3 NOT found!")
-ENDIF(GLFW3_LIBRARY AND GLFW3_INCLUDE_DIRS)
+# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE
+# if all listed variables are TRUE
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(
+	glfw3 DEFAULT_MSG
+	GLFW3_LIBRARY
+	GLFW3_INCLUDE_DIRS)
+
+
