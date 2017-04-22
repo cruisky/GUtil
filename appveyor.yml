@@ -1,7 +1,7 @@
 version: 1.0.{build}
 environment:
   BUILD_PATH: build
-  GLFW_URL: https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
+  GLFW_URL: https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN32.zip
   GLFW_ROOT: C:/GLFW
 
   matrix:
@@ -14,13 +14,15 @@ install:
   - ps: |
       if (!(Test-Path $env:GLFW_ROOT))
       {
-        New-Item -ItemType Directory -Force -Path $env:GLFW_ROOT
+        New-Item -ItemType Directory -Force -Path $env:GLFW_ROOT | Out-Null
         Push-Location $env:GLFW_ROOT
 
-        appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip"
+        appveyor DownloadFile "$($env:GLFW_URL)" -FileName "glfw.zip" | Out-Null
         Invoke-Expression "7z.exe x glfw.zip" | Out-Null
+        Get-ChildItem glfw-3* -Recurse | ForEach-Object { Move-Item $_.FullName .}
 
         Pop-Location
+        # Tree $env:GLFW_ROOT
       }
 
 before_build:
