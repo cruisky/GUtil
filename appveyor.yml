@@ -8,5 +8,5 @@ environment:
 build_script:
   - mkdir build
   - cd build
-  - cmake -G "%GENERATOR" ..
+  - cmake -G "%GENERATOR%" ..
   - cmake --build . --config %CONFIG%
