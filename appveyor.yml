@@ -5,6 +5,7 @@ environment:
   GLFW_DIR: C:/GLFW
 
   matrix:
+  fast_finish: true     # immediately finish build once one of the jobs fails.
   - GENERATOR: Visual Studio 14 2015
     CONFIG: Debug
   - GENERATOR: Visual Studio 14 2015
@@ -29,7 +30,7 @@ before_build:
       New-Item -ItemType Directory -Force -Path $env:BUILD_PATH
       Push-Location $env:BUILD_PATH
       # configure build
-      cmake -G "%GENERATOR%" ..
+      cmake -G "$($env:GENERATOR)" ..
       Pop-Location
 
 build_script:
