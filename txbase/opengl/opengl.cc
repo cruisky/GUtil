@@ -3,6 +3,7 @@
 #include "txbase/math/vector.h"
 #include "txbase/math/matrix.h"
 #include "txbase/sys/memory.h"
+#include "txbase/sys/tools.h"
 
 namespace TX
 {
@@ -15,9 +16,11 @@ namespace TX
 		void SetUniform(GLuint loc, const Matrix3x3& v, bool transpose) { glUniformMatrix3fv(loc, 1, transpose, v); }
 		void SetUniform(GLuint loc, const Matrix4x4& v, bool transpose) { glUniformMatrix4fv(loc, 1, transpose, v); }
 
-		Shader::Shader(GLenum type, const char *src){
+		Shader::Shader(const std::string& file, GLenum type) : Shader(type, ReadAllLines(file)) {}
+		Shader::Shader(GLenum type, const std::string& src){
 			id = glCreateShader(type);
-			glShaderSource(id, 1, &src, NULL);
+			const char *srcStr = src.c_str();
+			glShaderSource(id, 1, &srcStr, NULL);
 			glCompileShader(id);
 			GLint status = GL_FALSE;
 			glGetShaderiv(id, GL_COMPILE_STATUS, &status);

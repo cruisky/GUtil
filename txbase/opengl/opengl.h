@@ -64,7 +64,8 @@ namespace TX
 
 		class Shader : public Object {
 		public:
-			Shader(GLenum type, const char *source);
+			Shader(GLenum type, const std::string& source);
+			Shader(const std::string& file, GLenum type);
 			Shader(Shader&& that) : Object(std::move(that)){}
 			~Shader();
 
