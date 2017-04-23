@@ -11,7 +11,7 @@ namespace TX {
 				std::string title;
 				Vec2i windowSize = Vec2i(800, 600);
 				bool fullscreen = false;
-				bool fixsize = false;
+				bool resizable = true;
 				float fps = 60;
 			};
 		public:
@@ -43,6 +43,7 @@ namespace TX {
 
 		protected:
 			static const char * GetVersion();
+			GLFWwindow *		GetWindow();
 			MouseButtonState	Get(MouseButton button);
 			bool				Get(KeyCode code);
 			float				GetTime();

@@ -16,6 +16,14 @@ namespace TX {
 
 			glfwWindowHint(GLFW_VISIBLE, 0);
 			glfwWindowHint(GLFW_FOCUSED, 0);
+			glfwWindowHint(GLFW_RESIZABLE, config.resizable);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		#if __APPLE__
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		#endif
+
 			window = glfwCreateWindow(
 				config.windowSize.x,
 				config.windowSize.y,
@@ -42,12 +50,13 @@ namespace TX {
 			glfwSetWindowPosCallback(window, GLFWWindowPos);
 			glfwSetWindowIconifyCallback(window, GLFWWindowIconify);
 
-			std::printf("OpenGL: \t%s\n", GetVersion());
 
 			if (gl3wInit()) {
 				std::cerr << "gl3wInit failed." << std::endl;
 				throw std::runtime_error("");
 			}
+
+			std::cerr << "OpenGL: \t" << GetVersion() << std::endl;
 
 			Start();
 			glfwShowWindow(window);
@@ -58,11 +67,11 @@ namespace TX {
 			while (!glfwWindowShouldClose(window)) {
 				FrameStart();
 				busy = Render();
-				glfwSwapBuffers(window);
 				if (busy)
 					glfwPollEvents();
 				else
 					glfwWaitEvents();
+				glfwSwapBuffers(window);
 				FrameEnd();
 			}
 
@@ -75,6 +84,8 @@ namespace TX {
 		MouseButtonState	Application::Get(MouseButton button) { return MouseButtonState(glfwGetMouseButton(window, static_cast<int>(button))); }
 		bool				Application::Get(KeyCode code) { return glfwGetKey(window, static_cast<int>(code)) == GLFW_PRESS; }
 		const char *		Application::GetVersion() { return (const char *)glGetString(GL_VERSION); }
+		GLFWwindow *		Application::GetWindow() { return window; }
+
 		float				Application::GetTime() { return (float)glfwGetTime(); }
 		float				Application::GetDeltaTime() { return deltaTime; };
 		float				Application::GetFrameRate() { return fps; }
@@ -106,11 +117,9 @@ namespace TX {
 			auto *app = This(window);
 			Vec2i newSize(w, h);
 			if (app->config.windowSize != newSize) {
-				if (!app->config.fixsize) {
-					app->config.windowSize = newSize;
-					app->OnResize();
-					glViewport(0, 0, w, h);
-				}
+				app->config.windowSize = newSize;
+				app->OnResize();
+				glViewport(0, 0, w, h);
 			}
 		}
 		void Application::GLFWWindowSize(GLFWwindow *window, int w, int h) { This(window)->OnWindowResize(w, h); }
