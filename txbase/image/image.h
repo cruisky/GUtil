@@ -20,5 +20,7 @@ namespace TX{
 			bool flip_y = false,
 			Format format = BMP,
 			Color::Channel channel = Color::Channel::RGB);
+
+		static Color *LoadCheckerboard(int width, int height, int squareSize);
 	};
 }

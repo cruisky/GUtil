@@ -100,4 +100,22 @@ namespace TX {
 		}
 		delete[] buffer;
 	}
+
+	Color *Image::LoadCheckerboard(int width, int height, int squareSize) {
+		const int size = width * height;
+		const int dblSquareSize = 2 * squareSize;
+
+		Color *image = new Color[size];
+		for (int y = 0, i = 0; y < height; y++){
+			bool flag = y % dblSquareSize < squareSize;
+			for (int x = 0; x < width; x++, i++){
+				if (flag ^ (x % dblSquareSize < squareSize))
+					image[i] = Color::BLACK;
+				else
+					image[i] = Color::WHITE;
+			}
+		}
+		return image;
+	}
+
 }
