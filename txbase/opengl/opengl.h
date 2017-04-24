@@ -82,6 +82,8 @@ namespace TX
 			// GL_LINEAR, GL_NEAREST
 			GLenum filter = GL_LINEAR;
 			Texture() { glGenTextures(1, &id); }
+			Texture(Texture&& that) : Object(std::move(that)){}
+			~Texture() { glDeleteTextures(1, &id); }
 			inline void Bind() const { glBindTexture(type, id); }
 			inline void Unbind() const { glBindTexture(type, 0); }
 			inline void Data(const Color *image, int width, int height) {
