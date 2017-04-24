@@ -5,6 +5,7 @@
 #include <txbase/math/matrix.h>
 #include <txbase/shape/mesh.h>
 #include <txbase/scene/camera.h>
+#include <txbase/image/image.h>
 
 namespace TX {
 	namespace GL {
@@ -162,9 +163,15 @@ namespace TX {
 		public:
 			Program program;
 			Mesh glObj;
+			Texture tex;
+			const int texSize = 128;
 		public:
 			Demo3DMesh(const TX::Mesh& mesh){
+				// Shape & Texture
 				glObj.Upload(mesh);
+				std::unique_ptr<Color[]> checkerboard(Image::LoadCheckerboard(texSize, texSize, 4));
+				tex.Data(checkerboard.get(), texSize, texSize);
+				tex.Unbind();
 
 				// Shaders
 				Shader vs(GL_VERTEX_SHADER,
@@ -172,24 +179,40 @@ namespace TX {
 					#version 330 core
 					layout (location = 0) in vec3 position;
 					layout (location = 1) in vec3 normal;
+					layout (location = 2) in vec2 texCoord;
 					uniform mat4 iModel;
 					uniform mat4 iView;
 					uniform mat4 iProj;
-					out vec3 norm;
+
+					out VS_OUT {
+						vec3 pos;
+						vec3 norm;
+						vec2 uv;
+					} vs_out;
+
 					void main()
 					{
 						gl_Position = iProj * iView * iModel * vec4(position, 1.0f);
-						norm = normal;
+						vs_out.pos = gl_Position.xyz;
+						vs_out.norm = normal;
+						vs_out.uv = texCoord;
 					}
 				)");
 				Shader fs(GL_FRAGMENT_SHADER,
 				R"(
 					#version 330 core
-					in vec3 norm;
+					uniform sampler2D iTex2D;
+
+					in VS_OUT {
+						vec3 pos;
+						vec3 norm;
+						vec2 uv;
+					} fs_in;
+
 					out vec4 color;
 					void main()
 					{
-						color = vec4((norm+1.)*.5, 1.);
+						color = vec4((fs_in.norm+1.)*.5, 1.) * texture(iTex2D, fs_in.uv);
 					}
 				)");
 				program.Compile(vs, fs);
@@ -205,6 +228,7 @@ namespace TX {
 				program.SetUniform("iModel", Matrix4x4::IDENTITY);
 				program.SetUniform("iView", camera.transform.WorldToLocalMatrix());
 				program.SetUniform("iProj", camera.CameraToViewport());
+				tex.Bind();
 
 				glObj.Draw();
 			}
