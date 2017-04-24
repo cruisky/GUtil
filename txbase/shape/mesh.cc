@@ -249,6 +249,15 @@ namespace TX {
 			indices.push_back(off+2);
 			indices.push_back(off+3);
 		}
+
+		uv.reserve(6 * 4);
+		for (uint i = 0; i < 6; i++) {
+			uv.push_back(Vec2(0, 1));
+			uv.push_back(Vec2(1, 1));
+			uv.push_back(Vec2(0, 0));
+			uv.push_back(Vec2(1, 0));
+		}
+
 		return *this;
 	}
 
