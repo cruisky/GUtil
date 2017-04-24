@@ -41,11 +41,40 @@ namespace TX
 			return log;
 		}
 
+		struct Texture::Impl {
+			std::shared_ptr<Texture> BLACK;
+			std::shared_ptr<Texture> WHITE;
+		};
+
+		const std::unique_ptr<Texture::Impl> Texture::sp(new Texture::Impl);
+		Texture::Texture() { glGenTextures(1, &id); }
+		Texture::Texture(Texture&& that) : Object(std::move(that)){}
+		Texture::~Texture() { glDeleteTextures(1, &id); }
+
+		std::shared_ptr<Texture> Texture::GetBlack(){
+			if(!sp->BLACK){
+				sp->BLACK = std::make_shared<Texture>();
+				sp->BLACK->Data(&Color::BLACK, 1, 1);
+				sp->BLACK->Unbind();
+			}
+			return sp->BLACK;
+		}
+		std::shared_ptr<Texture> Texture::GetWhite(){
+			if(!sp->WHITE){
+				sp->WHITE = std::make_shared<Texture>();
+				sp->WHITE->Data(&Color::WHITE, 1, 1);
+				sp->WHITE->Unbind();
+			}
+			return sp->WHITE;
+		}
+
 		struct Program::Impl {
 			std::map<std::string, std::shared_ptr<Texture>> textures;
 		};
 		Program::Program(): p(new Impl){ id = glCreateProgram(); }
-		Program::Program(Program&& that) : Object(std::move(that)){}
+		Program::Program(Program&& that) :
+			Object(std::move(that)),
+			p(std::move(that.p)) {}
 		Program::~Program(){ if(id) glDeleteProgram(id); }
 		void Program::Use() const {
 			glUseProgram(id);
@@ -97,6 +126,9 @@ namespace TX
 			delete[] buffer;
 			return log;
 		}
+
+		static std::shared_ptr<Texture> GetBlack();
+		static std::shared_ptr<Texture> GetWhite();
 
 		void Mesh::Upload(const TX::Mesh& mesh){
 			vao.Bind();

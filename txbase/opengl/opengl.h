@@ -74,6 +74,9 @@ namespace TX
 		};
 
 		class Texture : public Object {
+		private:
+			struct Impl;
+			static const std::unique_ptr<Impl> sp;
 		public:
 			// GL_TEXTURE_2D only
 			GLenum type = GL_TEXTURE_2D;
@@ -81,9 +84,9 @@ namespace TX
 			GLenum wrap = GL_REPEAT;
 			// GL_LINEAR, GL_NEAREST
 			GLenum filter = GL_LINEAR;
-			Texture() { glGenTextures(1, &id); }
-			Texture(Texture&& that) : Object(std::move(that)){}
-			~Texture() { glDeleteTextures(1, &id); }
+			Texture();
+			Texture(Texture&& that);
+			~Texture();
 			inline void Bind() const { glBindTexture(type, id); }
 			inline void Unbind() const { glBindTexture(type, 0); }
 			inline void Data(const Color *image, int width, int height) {
@@ -100,12 +103,14 @@ namespace TX
 				);
 				glGenerateMipmap(GL_TEXTURE_2D);
 			}
+			static std::shared_ptr<Texture> GetBlack();
+			static std::shared_ptr<Texture> GetWhite();
 		};
 
 		class Program : public Object {
 		private:
 			struct Impl;
-			const std::unique_ptr<Impl> p;
+			std::unique_ptr<Impl> p;
 		public:
 			Program();
 			Program(Program&& that);
