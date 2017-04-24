@@ -101,9 +101,12 @@ namespace TX
 		};
 
 		class Program : public Object {
+		private:
+			struct Impl;
+			const std::unique_ptr<Impl> p;
 		public:
 			Program();
-			Program(Program&& that) : Object(std::move(that)){}
+			Program(Program&& that);
 			~Program();
 			void Use() const;
 			void Link();
@@ -137,6 +140,8 @@ namespace TX
 			inline void SetUniform(const char *name, T v) const { GL::SetUniform(GetUniformLoc(name), v); }
 			inline void SetUniform(const char *name, const Matrix3x3& v, bool transpose) const { GL::SetUniform(GetUniformLoc(name), v, transpose); }
 			inline void SetUniform(const char *name, const Matrix4x4& v, bool transpose) const { GL::SetUniform(GetUniformLoc(name), v, transpose); }
+
+			void SetTexture(const char *name, std::shared_ptr<Texture> tex);
 
 			void BindAttribLoc(const char *name, GLuint index);
 			std::string GetLog();

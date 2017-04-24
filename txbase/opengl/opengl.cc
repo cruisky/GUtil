@@ -4,6 +4,7 @@
 #include "txbase/math/matrix.h"
 #include "txbase/sys/memory.h"
 #include "txbase/sys/tools.h"
+#include <map>
 
 namespace TX
 {
@@ -40,11 +41,24 @@ namespace TX
 			return log;
 		}
 
-		Program::Program(){
-			id = glCreateProgram();
-		}
+		struct Program::Impl {
+			std::map<std::string, std::shared_ptr<Texture>> textures;
+		};
+		Program::Program(): p(new Impl){ id = glCreateProgram(); }
+		Program::Program(Program&& that) : Object(std::move(that)){}
 		Program::~Program(){ if(id) glDeleteProgram(id); }
-		void Program::Use() const { glUseProgram(id); }
+		void Program::Use() const {
+			glUseProgram(id);
+
+			// bind all textures
+			int texUnitId = 0;
+			for (auto const& pair : p->textures){
+				SetUniform(pair.first.c_str(), texUnitId);
+				glActiveTexture(GL_TEXTURE0 + texUnitId);
+				pair.second->Bind();
+				texUnitId ++;
+			}
+		}
 		void Program::Attach(const Shader& shader){
 			glAttachShader(id, shader);
 		}
@@ -66,6 +80,11 @@ namespace TX
 				std::clog << GetLog() << std::endl;
 				throw "Failed to validate program";
 			}
+		}
+
+		void Program::SetTexture(const char *name, std::shared_ptr<Texture> tex) {
+			if (GetUniformLoc(name) != -1)
+				p->textures.insert(std::make_pair(std::string(name), tex));
 		}
 
 		void Program::BindAttribLoc(const char *name, GLuint index){ glBindAttribLocation(id, index, name); }
