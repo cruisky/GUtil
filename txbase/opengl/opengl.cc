@@ -91,6 +91,11 @@ namespace TX
 				glEnableVertexAttribArray(ATTRIB_NORMAL);
 				glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			}
+			if (mesh.uv.size() > 0){
+				uvs.Data(mesh.uv.size() * sizeof(mesh.uv[0]), mesh.uv.data());
+				glEnableVertexAttribArray(ATTRIB_TEXCOORD);
+				glVertexAttribPointer(ATTRIB_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+			}
 			if (mesh.indices.size() > 0){
 				indices.Data(mesh.indices.size() * sizeof(mesh.indices[0]), mesh.indices.data());
 			}

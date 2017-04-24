@@ -13,6 +13,7 @@ namespace TX
 		enum Attribute {
 			ATTRIB_POS,
 			ATTRIB_NORMAL,
+			ATTRIB_TEXCOORD,
 		};
 
 		inline void SetUniform(GLuint loc, int v) { glUniform1i(loc, v); }
@@ -72,6 +73,33 @@ namespace TX
 			std::string GetLog();
 		};
 
+		class Texture : public Object {
+		public:
+			// GL_TEXTURE_2D only
+			GLenum type = GL_TEXTURE_2D;
+			// GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER
+			GLenum wrap = GL_REPEAT;
+			// GL_LINEAR, GL_NEAREST
+			GLenum filter = GL_LINEAR;
+			Texture() { glGenTextures(1, &id); }
+			inline void Bind() const { glBindTexture(type, id); }
+			inline void Unbind() const { glBindTexture(type, 0); }
+			inline void Data(const Color *image, int width, int height) {
+				Bind();
+				glTexImage2D(GL_TEXTURE_2D,
+					0,			// mipmap level
+					GL_RGB,		// target texture format
+					width,
+					height,
+					0,			// (legacy) border
+					GL_RGBA,	// source format
+					GL_FLOAT,	// source data type
+					image		// source data
+				);
+				glGenerateMipmap(GL_TEXTURE_2D);
+			}
+		};
+
 		class Program : public Object {
 		public:
 			Program();
@@ -118,6 +146,7 @@ namespace TX
 		public:
 			VertexBuffer vertices;
 			VertexBuffer normals;
+			VertexBuffer uvs;
 			IndexBuffer indices;
 			VertexArray vao;
 		public:
