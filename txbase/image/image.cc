@@ -1,11 +1,63 @@
 #include "txbase/stdafx.h"
 #include "txbase/image/image.h"
+#include <stdexcept>
+
+#define STB_IMAGE_IMPLEMENTATION
+// #define STBI_ONLY_PNG
+// #define STBI_ONLY_BMP
+// #define STBI_ONLY_PNM
+// #define STBI_ONLY_
+#include "txbase/libs/stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "txbase/libs/stb_image_write.h"
 
-namespace TX{
-	void Image::Write(char const *filename, const Color *data, int width, int height, bool flip_y, Format format, Color::Channel channel){
+namespace TX {
+	Color *Image::Read(const std::string& filename, int *width, int *height) {
+		int channels;
+		float *data = stbi_loadf(filename.c_str(), width, height, &channels, 0);
+
+		if (!data){
+			throw std::runtime_error(filename + ": read failed.");
+		}
+
+		std::printf("data: %p\n", data);
+		std::printf("size: %d x %d, channels: %d\n", *width, *height, channels);
+
+		if (channels > 4) {
+			throw std::runtime_error("unsupported number of channels");
+		}
+
+		// convert to RGBA format
+		const int size = *width * *height;
+		Color *img = new Color[size];
+		if (channels <= static_cast<int>(Color::Channel::YA)){
+			for (int i = 0, di = 0; i < size; i++, di += channels){
+				img[i].r = img[i].g = img[i].b = data[di];
+			}
+			if (channels == static_cast<int>(Color::Channel::YA)){
+				for (int i = 0, di = 1; i < size; i++, di += channels)
+					img[i].a = data[di];
+			}
+		}
+		else {
+			for (int i = 0, di = 0; i < size; i++, di += channels){
+				img[i].r = data[di];
+				img[i].g = data[di + 1];
+				img[i].b = data[di + 2];
+			}
+			if (channels == static_cast<int>(Color::Channel::RGBA)){
+				for (int i = 0, di = 3; i < size; i++, di += channels)
+					img[i].a = data[di];
+			}
+		}
+
+		stbi_image_free(data);
+
+		return img;
+	}
+
+	void Image::Write(const std::string& filename, const Color *data, int width, int height, bool flip_y, Format format, Color::Channel channel){
 		// get bytes per pixel
 		const int pixel_size = static_cast<int>(channel);
 		const int image_size = width * height;
@@ -40,10 +92,10 @@ namespace TX{
 
 		switch (format){
 		case PNG:
-			stbi_write_png(filename, width, height, static_cast<int>(channel), buffer, width * pixel_size);
+			stbi_write_png(filename.c_str(), width, height, static_cast<int>(channel), buffer, width * pixel_size);
 			break;
 		case BMP:
-			stbi_write_bmp(filename, width, height, static_cast<int>(channel), buffer);
+			stbi_write_bmp(filename.c_str(), width, height, static_cast<int>(channel), buffer);
 			break;
 		}
 		delete[] buffer;

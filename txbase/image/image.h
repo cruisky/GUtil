@@ -1,6 +1,7 @@
 #pragma once
 
 #include "txbase/math/color.h"
+#include <string>
 
 namespace TX{
 	class Image {
@@ -9,8 +10,10 @@ namespace TX{
 			BMP, PNG
 		};
 
+		static Color *Read(const std::string& filename, int *width, int *height);
+
 		static void Write(
-			char const *filename,
+			const std::string& filename,
 			const Color *data,
 			int width,
 			int height,
