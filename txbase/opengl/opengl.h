@@ -73,22 +73,38 @@ namespace TX
 			std::string GetLog();
 		};
 
-		class Texture : public Object {
+		class ITexture {
+		public:
+			virtual void Bind() const = 0;
+			virtual void Unbind() const = 0;
+		protected:
+			ITexture(){}
+		};
+
+		template<GLenum Type>
+		class Texture : public Object, public ITexture {
+		public:
+			// // GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER
+			// GLenum wrap = GL_REPEAT;
+			// // GL_LINEAR, GL_NEAREST
+			// GLenum filter = GL_LINEAR;
+			inline void Bind() const { glBindTexture(Type, id); }
+			inline void Unbind() const { glBindTexture(Type, 0); }
+		protected:
+			Texture() { glGenTextures(1, &id); }
+			Texture(Texture&& that) : Object(std::move(that)){}
+			~Texture() { glDeleteTextures(1, &id); }
+		};
+
+		class Texture2D: public Texture<GL_TEXTURE_2D> {
 		private:
 			struct Impl;
 			static const std::unique_ptr<Impl> sp;
 		public:
-			// GL_TEXTURE_2D only
-			GLenum type = GL_TEXTURE_2D;
-			// GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER
-			GLenum wrap = GL_REPEAT;
-			// GL_LINEAR, GL_NEAREST
-			GLenum filter = GL_LINEAR;
-			Texture();
-			Texture(Texture&& that);
-			~Texture();
-			inline void Bind() const { glBindTexture(type, id); }
-			inline void Unbind() const { glBindTexture(type, 0); }
+			Texture2D(): Texture(){}
+			Texture2D(Texture2D&& that): Texture(std::move(that)){}
+			static std::shared_ptr<Texture2D> GetBlack();
+			static std::shared_ptr<Texture2D> GetWhite();
 			inline void Data(const Color *image, int width, int height) {
 				Bind();
 				glTexImage2D(GL_TEXTURE_2D,
@@ -103,8 +119,6 @@ namespace TX
 				);
 				glGenerateMipmap(GL_TEXTURE_2D);
 			}
-			static std::shared_ptr<Texture> GetBlack();
-			static std::shared_ptr<Texture> GetWhite();
 		};
 
 		class Program : public Object {
@@ -148,7 +162,7 @@ namespace TX
 			inline void SetUniform(const char *name, const Matrix3x3& v, bool transpose) const { GL::SetUniform(GetUniformLoc(name), v, transpose); }
 			inline void SetUniform(const char *name, const Matrix4x4& v, bool transpose) const { GL::SetUniform(GetUniformLoc(name), v, transpose); }
 
-			void SetTexture(const char *name, std::shared_ptr<Texture> tex);
+			void SetTexture(const char *name, std::shared_ptr<ITexture> tex);
 
 			void BindAttribLoc(const char *name, GLuint index);
 			std::string GetLog();

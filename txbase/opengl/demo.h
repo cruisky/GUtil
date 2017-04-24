@@ -163,7 +163,7 @@ namespace TX {
 		public:
 			Program program;
 			Mesh glObj;
-			Texture tex;
+			Texture2D tex;
 			const int texSize = 128;
 		public:
 			Demo3DMesh(const TX::Mesh& mesh){

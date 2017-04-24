@@ -41,27 +41,22 @@ namespace TX
 			return log;
 		}
 
-		struct Texture::Impl {
-			std::shared_ptr<Texture> BLACK;
-			std::shared_ptr<Texture> WHITE;
+		struct Texture2D::Impl {
+			std::shared_ptr<Texture2D> BLACK;
+			std::shared_ptr<Texture2D> WHITE;
 		};
-
-		const std::unique_ptr<Texture::Impl> Texture::sp(new Texture::Impl);
-		Texture::Texture() { glGenTextures(1, &id); }
-		Texture::Texture(Texture&& that) : Object(std::move(that)){}
-		Texture::~Texture() { glDeleteTextures(1, &id); }
-
-		std::shared_ptr<Texture> Texture::GetBlack(){
+		const std::unique_ptr<Texture2D::Impl> Texture2D::sp(new Texture2D::Impl);
+		std::shared_ptr<Texture2D> Texture2D::GetBlack(){
 			if(!sp->BLACK){
-				sp->BLACK = std::make_shared<Texture>();
+				sp->BLACK = std::make_shared<Texture2D>();
 				sp->BLACK->Data(&Color::BLACK, 1, 1);
 				sp->BLACK->Unbind();
 			}
 			return sp->BLACK;
 		}
-		std::shared_ptr<Texture> Texture::GetWhite(){
+		std::shared_ptr<Texture2D> Texture2D::GetWhite(){
 			if(!sp->WHITE){
-				sp->WHITE = std::make_shared<Texture>();
+				sp->WHITE = std::make_shared<Texture2D>();
 				sp->WHITE->Data(&Color::WHITE, 1, 1);
 				sp->WHITE->Unbind();
 			}
@@ -69,7 +64,7 @@ namespace TX
 		}
 
 		struct Program::Impl {
-			std::map<std::string, std::shared_ptr<Texture>> textures;
+			std::map<std::string, std::shared_ptr<ITexture>> textures;
 		};
 		Program::Program(): p(new Impl){ id = glCreateProgram(); }
 		Program::Program(Program&& that) :
@@ -111,7 +106,7 @@ namespace TX
 			}
 		}
 
-		void Program::SetTexture(const char *name, std::shared_ptr<Texture> tex) {
+		void Program::SetTexture(const char *name, std::shared_ptr<ITexture> tex) {
 			if (GetUniformLoc(name) != -1)
 				p->textures.insert(std::make_pair(std::string(name), tex));
 		}
@@ -127,8 +122,8 @@ namespace TX
 			return log;
 		}
 
-		static std::shared_ptr<Texture> GetBlack();
-		static std::shared_ptr<Texture> GetWhite();
+		static std::shared_ptr<Texture2D> GetBlack();
+		static std::shared_ptr<Texture2D> GetWhite();
 
 		void Mesh::Upload(const TX::Mesh& mesh){
 			vao.Bind();
