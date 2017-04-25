@@ -13,24 +13,26 @@
 #include "txbase/libs/stb_image_write.h"
 
 namespace TX {
-	Color *Image::Read(const std::string& filename, int *width, int *height) {
-		int channels;
-		float *data = stbi_loadf(filename.c_str(), width, height, &channels, 0);
+	Image Image::Read(const std::string& filename) {
+		int width, height, channels;
+		float *data = stbi_loadf(filename.c_str(), &width, &height, &channels, 0);
 
 		if (!data){
 			throw std::runtime_error(filename + ": read failed.");
 		}
 
 		std::printf("data: %p\n", data);
-		std::printf("size: %d x %d, channels: %d\n", *width, *height, channels);
+		std::printf("size: %d x %d, channels: %d\n", width, height, channels);
 
 		if (channels > 4) {
 			throw std::runtime_error("unsupported number of channels");
 		}
 
 		// convert to RGBA format
-		const int size = *width * *height;
-		Color *img = new Color[size];
+		const int size = width * height;
+		Image result(width, height);
+		Color *img = result.Data();
+
 		if (channels <= static_cast<int>(Color::Channel::YA)){
 			for (int i = 0, di = 0; i < size; i++, di += channels){
 				img[i].r = img[i].g = img[i].b = data[di];
@@ -54,13 +56,16 @@ namespace TX {
 
 		stbi_image_free(data);
 
-		return img;
+		return result;
 	}
 
-	void Image::Write(const std::string& filename, const Color *data, int width, int height, bool flip_y, Format format, Color::Channel channel){
+	void Image::Write(const std::string& filename, const Image& image, bool flip_y, Format format, Color::Channel channel){
 		// get bytes per pixel
 		const int pixel_size = static_cast<int>(channel);
-		const int image_size = width * height;
+		const int image_size = image.Size();
+		const Color *data = image.Data();
+		const int width = image.Width();
+		const int height = image.Height();
 
 		if (width <= 0 || height <= 0)
 			return;
@@ -101,11 +106,14 @@ namespace TX {
 		delete[] buffer;
 	}
 
-	Color *Image::LoadCheckerboard(int width, int height, int squareSize) {
+	void Image::LoadCheckerboard(int width, int height, int squareSize) {
 		const int size = width * height;
 		const int dblSquareSize = 2 * squareSize;
 
-		Color *image = new Color[size];
+		this->data.resize(size);
+		this->dimension = Vec2i(width, height);
+		Color *image = this->Data();
+
 		for (int y = 0, i = 0; y < height; y++){
 			bool flag = y % dblSquareSize < squareSize;
 			for (int x = 0; x < width; x++, i++){
@@ -115,7 +123,6 @@ namespace TX {
 					image[i] = Color::WHITE;
 			}
 		}
-		return image;
 	}
 
 }

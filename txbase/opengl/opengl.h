@@ -5,6 +5,7 @@
 #include <GL/gl3w.h>
 #include "txbase/shape/obj.h"
 #include "txbase/sys/memory.h"
+#include "txbase/image/image.h"
 
 namespace TX
 {
@@ -131,19 +132,19 @@ namespace TX
 			// 3	GL_TEXTURE_CUBE_MAP_NEGATIVE_Y	bottom
 			// 4	GL_TEXTURE_CUBE_MAP_POSITIVE_Z	front
 			// 5	GL_TEXTURE_CUBE_MAP_NEGATIVE_Z	back
-			inline void Data(const Color *faces[6], int width, int height) {
+			inline void Data(const Image faces[6]) {
 				Bind();
 				for (GLuint i = 0; i < 6; i++){
 					glTexImage2D(
 						GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 						0,
 						GL_RGB,
-						width,
-						height,
+						faces[i].Width(),
+						faces[i].Height(),
 						0,
 						GL_RGBA,
 						GL_FLOAT,
-						faces[i]
+						faces[i].Data()
 					);
 				}
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
