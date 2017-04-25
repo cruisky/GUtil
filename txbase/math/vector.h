@@ -61,6 +61,8 @@ namespace TX
 		inline Vec(const Vec& ot) : x(ot.x), y(ot.y){}
 		explicit inline Vec(T val) : x(val), y(val){}
 		inline Vec(const T& x, const T& y) : x(x), y(y){}
+		template<size_t N>
+		inline Vec(const Vec<N, T>& ot) : x(ot.x), y(ot.y) { static_assert(N >= 2, "Dimension increase is not supported"); }
 		inline Vec& operator = (const Vec& ot) { x = ot.x, y = ot.y; return *this; }
 		template<typename U>
 		inline Vec(const Vec<2, U>& ot) : x(T(ot.x)), y(T(ot.y)){}
@@ -164,6 +166,9 @@ namespace TX
 		explicit inline Vec(const T& val) : x(val), y(val), z(val){}
 		inline Vec(const T& x, const T& y, const T& z) : x(x), y(y), z(z){}
 		inline Vec(const Vec& ot) : x(ot.x), y(ot.y), z(ot.z){}
+		inline Vec(const Vec<2, T>& ot, T z) : x(ot.x), y(ot.y), z(z){}
+		template<size_t N>
+		inline Vec(const Vec<N, T>& ot) : x(ot.x), y(ot.y), z(ot.z) { static_assert(N >= 3, "Dimension increase is not supported"); }
 		inline Vec& operator = (const Vec& ot) { x = ot.x, y = ot.y, z = ot.z; return *this; }
 		template<typename U>
 		inline Vec(const Vec<3, U>& ot) : x(T(ot.x)), y(T(ot.y)), z(T(ot.z)) {}
@@ -280,6 +285,9 @@ namespace TX
 		inline Vec(const Vec<2, T>& a, const Vec<2, T>& b) : x(a.x), y(a.y), z(b.x), w(b.y){}
 		inline Vec(const T *arr) : x(arr[0]), y(arr[1]), z(arr[2]), w(arr[3]){}
 		inline Vec(const Vec& ot) : x(ot.x), y(ot.y), z(ot.z), w(ot.w){}
+		inline Vec(const Vec<3, T>& ot, T w) : x(ot.x), y(ot.y), z(ot.z), w(w){}
+		template<size_t N>
+		inline Vec(const Vec<N, T>& ot) : x(ot.x), y(ot.y), z(ot.z), w(ot.w) { static_assert(N >= 4, "Dimension increase is not supported"); }
 		inline Vec& operator = (const Vec& ot) { x = ot.x, y = ot.y, z = ot.z, w = ot.w; return *this; }
 		template<typename U>
 		inline Vec(const Vec<4, U>& ot) : x(T(ot.x)), y(T(ot.y)), z(T(ot.z)), w(T(ot.w)) {}

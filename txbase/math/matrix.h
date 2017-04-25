@@ -22,6 +22,7 @@ namespace TX{
 			row[2] = r2;
 		}
 		Matrix3x3(const Matrix3x3& ot) : Matrix3x3(ot[0], ot[1], ot[2]){}
+		Matrix3x3(const Matrix4x4& ot);
 		Matrix3x3(
 			float m00, float m01, float m02,
 			float m10, float m11, float m12,
@@ -135,7 +136,14 @@ namespace TX{
 			row[2] = r2;
 			row[3] = r3;
 		}
-		Matrix4x4(const Matrix4x4& ot) :Matrix4x4(ot[0], ot[1], ot[2], ot[3]){}
+		Matrix4x4(const Matrix4x4& ot) : Matrix4x4(ot[0], ot[1], ot[2], ot[3]){}
+		Matrix4x4(const Matrix3x3& ot) :
+			Matrix4x4(
+				Vec4(ot[0], 0.f),
+				Vec4(ot[1], 0.f),
+				Vec4(ot[2], 0.f),
+				Vec4::W)
+			{}
 		Matrix4x4(
 			float m00, float m01, float m02, float m03,
 			float m10, float m11, float m12, float m13,

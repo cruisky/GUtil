@@ -9,6 +9,7 @@ namespace TX{
 		1.f, 0.f, 0.f,
 		0.f, 1.f, 0.f,
 		0.f, 0.f, 1.f);
+	Matrix3x3::Matrix3x3(const Matrix4x4& ot) : Matrix3x3(Vec3(ot[0]), Vec3(ot[1]), Vec3(ot[2])){}
 
 
 	const Matrix4x4 Matrix4x4::IDENTITY = Matrix4x4(

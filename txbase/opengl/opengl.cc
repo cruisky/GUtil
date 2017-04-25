@@ -18,7 +18,7 @@ namespace TX
 		void SetUniform(GLuint loc, const Matrix4x4& v, bool transpose) { glUniformMatrix4fv(loc, 1, transpose, v); }
 
 		Shader::Shader(const std::string& file, GLenum type) try : Shader(type, ReadAllLines(file)) {}
-			catch (const std::runtime_error& e) {
+			catch (const std::runtime_error&) {
 				std::cerr << "Shader file: " << file << std::endl;
 				throw;
 			}
