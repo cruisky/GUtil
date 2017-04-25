@@ -17,7 +17,11 @@ namespace TX
 		void SetUniform(GLuint loc, const Matrix3x3& v, bool transpose) { glUniformMatrix3fv(loc, 1, transpose, v); }
 		void SetUniform(GLuint loc, const Matrix4x4& v, bool transpose) { glUniformMatrix4fv(loc, 1, transpose, v); }
 
-		Shader::Shader(const std::string& file, GLenum type) : Shader(type, ReadAllLines(file)) {}
+		Shader::Shader(const std::string& file, GLenum type) try : Shader(type, ReadAllLines(file)) {}
+			catch (const std::runtime_error& e) {
+				std::cerr << "Shader file: " << file << std::endl;
+				throw;
+			}
 		Shader::Shader(GLenum type, const std::string& src){
 			id = glCreateShader(type);
 			const char *srcStr = src.c_str();
@@ -26,8 +30,8 @@ namespace TX
 			GLint status = GL_FALSE;
 			glGetShaderiv(id, GL_COMPILE_STATUS, &status);
 			if (status == GL_FALSE){
-				std::clog << GetLog() << std::endl;
-				throw "Failed to compile shader";
+				std::cerr << GetLog() << std::endl;
+				throw std::runtime_error("Shader failed to compile: \n" + src);
 			}
 		}
 		Shader::~Shader(){ if(id) glDeleteShader(id); }

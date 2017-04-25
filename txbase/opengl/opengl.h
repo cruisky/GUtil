@@ -28,12 +28,13 @@ namespace TX
 		class Object : public NonCopyable {
 		public:
 			GLuint id;
+			inline operator GLuint() const { return id; }
+		protected:
 			Object(): id(0){}
 			Object(Object&& that){
 				id = that.id;
 				that.id = 0;
 			}
-			inline operator GLuint() const { return id; }
 		};
 
 		template<GLenum Target>
@@ -101,8 +102,7 @@ namespace TX
 			struct Impl;
 			static const std::unique_ptr<Impl> sp;
 		public:
-			Texture2D(): Texture(){}
-			Texture2D(Texture2D&& that): Texture(std::move(that)){}
+			using Texture::Texture;
 			static std::shared_ptr<Texture2D> GetBlack();
 			static std::shared_ptr<Texture2D> GetWhite();
 			inline void Data(const Color *image, int width, int height) {
@@ -118,6 +118,39 @@ namespace TX
 					image		// source data
 				);
 				glGenerateMipmap(GL_TEXTURE_2D);
+			}
+		};
+
+		class Cubemap: public Texture<GL_TEXTURE_CUBE_MAP> {
+		public:
+			using Texture::Texture;
+
+			// 0	GL_TEXTURE_CUBE_MAP_POSITIVE_X	right
+			// 1	GL_TEXTURE_CUBE_MAP_NEGATIVE_X	left
+			// 2	GL_TEXTURE_CUBE_MAP_POSITIVE_Y	top
+			// 3	GL_TEXTURE_CUBE_MAP_NEGATIVE_Y	bottom
+			// 4	GL_TEXTURE_CUBE_MAP_POSITIVE_Z	front
+			// 5	GL_TEXTURE_CUBE_MAP_NEGATIVE_Z	back
+			inline void Data(const Color *faces[6], int width, int height) {
+				Bind();
+				for (GLuint i = 0; i < 6; i++){
+					glTexImage2D(
+						GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+						0,
+						GL_RGB,
+						width,
+						height,
+						0,
+						GL_RGBA,
+						GL_FLOAT,
+						faces[i]
+					);
+				}
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 			}
 		};
 

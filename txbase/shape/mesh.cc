@@ -261,7 +261,6 @@ namespace TX {
 		return *this;
 	}
 
-
 	MeshSampler::MeshSampler(std::shared_ptr<const Mesh> mesh) : mesh(mesh){
 		sumArea = 0.f;
 		const uint idxCount = mesh->indices.size();
