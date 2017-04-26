@@ -92,6 +92,8 @@ namespace TX
 			// GLenum filter = GL_LINEAR;
 			inline void Bind() const { glBindTexture(Type, id); }
 			inline void Unbind() const { glBindTexture(Type, 0); }
+
+			void Parameter(GLenum name, int value){ glTexParameteri(Type, name, value); }
 		protected:
 			Texture() { glGenTextures(1, &id); }
 			Texture(Texture&& that) : Object(std::move(that)){}
@@ -106,7 +108,7 @@ namespace TX
 			using Texture::Texture;
 			static std::shared_ptr<Texture2D> GetBlack();
 			static std::shared_ptr<Texture2D> GetWhite();
-			inline void Data(const Color *image, int width, int height) {
+			inline void Data(const Color *image, int width, int height, bool genMipmap = true) {
 				Bind();
 				glTexImage2D(GL_TEXTURE_2D,
 					0,			// mipmap level
@@ -118,7 +120,11 @@ namespace TX
 					GL_FLOAT,	// source data type
 					image		// source data
 				);
-				glGenerateMipmap(GL_TEXTURE_2D);
+				Parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				Parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				if (genMipmap) {
+					glGenerateMipmap(GL_TEXTURE_2D);
+				}
 			}
 		};
 
@@ -147,11 +153,109 @@ namespace TX
 						faces[i].Data()
 					);
 				}
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+				Parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				Parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				Parameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				Parameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				Parameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			}
+		};
+
+		// Usually as stencil/depth buffer attachment.
+		template <GLenum AttachmentType>
+		class Renderbuffer : public Object {
+		public:
+			const GLenum InternalFormat;
+		public:
+			Renderbuffer(GLenum internalFormat, int width, int height):
+				InternalFormat(internalFormat)
+			{
+				glGenRenderbuffers(1, &id);
+				Bind();
+				Size(width, height);
+				Unbind();
+			}
+			Renderbuffer(Renderbuffer&& that):
+				Object(std::move(that)),
+				InternalFormat(that.InternalFormat)
+				{}
+			~Renderbuffer(){ if(id) glDeleteRenderbuffers(1, &id); }
+
+			inline void Bind() const { glBindRenderbuffer(GL_RENDERBUFFER, id); }
+			inline void Unbind() const { glBindRenderbuffer(GL_RENDERBUFFER, 0); }
+
+			inline void Size(int width, int height) {
+				glRenderbufferStorage(
+					GL_RENDERBUFFER,
+					InternalFormat,
+					width,
+					height);
+			}
+
+			inline void Parameter(GLenum pname) const {
+				int v; Parameter(pname, &v); return v;
+			}
+			inline void Parameter(GLenum pname, int *params) const {
+				Bind();
+				glGetRenderbufferParameteriv(GL_RENDERBUFFER, pname, params);
+				Unbind();
+			}
+		};
+		typedef Renderbuffer<GL_DEPTH_STENCIL_ATTACHMENT> DepthStencilRenderbuffer;
+
+		class Framebuffer : public Object {
+		public:
+			Texture2D					texture;
+			DepthStencilRenderbuffer	renderbuffer;
+		private:
+			Vec2i size_;
+		public:
+			Framebuffer(int width, int height):
+				size_(width, height),
+				renderbuffer(GL_DEPTH24_STENCIL8, width, height)
+			{
+				glGenFramebuffers(1, &id);
+
+				texture.Data(nullptr, width, height, false);
+
+				Attach(texture);
+				Attach(renderbuffer);
+
+				if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+					throw std::runtime_error("Framebuffer is not complete");
+				}
+			}
+			Framebuffer(Framebuffer&& that):
+				Object(std::move(that)),
+				renderbuffer(std::move(that.renderbuffer)),
+				texture(std::move(that.texture)),
+				size_(that.size_)
+				{}
+			~Framebuffer(){ if(id) glDeleteFramebuffers(1, &id); }
+
+			inline void Bind() const { glBindFramebuffer(GL_FRAMEBUFFER, id); }
+			inline void Unbind() const { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+			inline void Attach(const Texture2D& tex){
+				Bind();
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+				Unbind();
+			}
+			template <GLenum AttachmentType>
+			inline void Attach(const Renderbuffer<AttachmentType>& buf){
+				Bind();
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, AttachmentType, GL_RENDERBUFFER, buf);
+				Unbind();
+			}
+			inline Vec2i Size() const { return size_; }
+			inline void Size(int width, int height){
+				size_.x = width;
+				size_.y = height;
+
+				// there is nothing required on the FBO
+				// update the size of texture and render buffer
+				texture.Data(nullptr, width, height);
+				renderbuffer.Size(width, height);
 			}
 		};
 
