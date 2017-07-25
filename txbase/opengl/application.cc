@@ -67,10 +67,12 @@ namespace TX {
 			while (!glfwWindowShouldClose(window)) {
 				FrameStart();
 				busy = Render();
-				if (busy)
+				if (busy) {
 					glfwPollEvents();
-				else
+				}
+				else {
 					glfwWaitEvents();
+				}
 				glfwSwapBuffers(window);
 				FrameEnd();
 			}

@@ -3,6 +3,7 @@
 
 #include "txbase/fwddecl.h"
 #include <GL/gl3w.h>
+#include <GL/glu.h>
 #include "txbase/shape/obj.h"
 #include "txbase/sys/memory.h"
 #include "txbase/image/image.h"
@@ -35,6 +36,26 @@ namespace TX
 			Object(Object&& that){
 				id = that.id;
 				that.id = 0;
+			}
+		};
+
+		class Error: public std::runtime_error
+		{
+		public:
+			GLenum code;
+		public:
+			Error(GLenum code): code(code), runtime_error(GetErrorString(code)) {}
+		private:
+			static std::string GetErrorString(GLenum code) {
+				switch(code) {
+					case GL_NO_ERROR:						return "GL_NO_ERROR";
+					case GL_INVALID_OPERATION:				return "GL_INVALID_OPERATION";
+					case GL_INVALID_ENUM:					return "GL_INVALID_ENUM";
+					case GL_INVALID_VALUE:					return "GL_INVALID_VALUE";
+					case GL_OUT_OF_MEMORY:					return "GL_OUT_OF_MEMORY";
+					case GL_INVALID_FRAMEBUFFER_OPERATION:	return "GL_INVALID_FRAMEBUFFER_OPERATION";
+					default:								return "Unknown error code";
+				}
 			}
 		};
 
@@ -171,9 +192,7 @@ namespace TX
 				InternalFormat(internalFormat)
 			{
 				glGenRenderbuffers(1, &id);
-				Bind();
 				Size(width, height);
-				Unbind();
 			}
 			Renderbuffer(Renderbuffer&& that):
 				Object(std::move(that)),
@@ -185,11 +204,13 @@ namespace TX
 			inline void Unbind() const { glBindRenderbuffer(GL_RENDERBUFFER, 0); }
 
 			inline void Size(int width, int height) {
+				Bind();
 				glRenderbufferStorage(
 					GL_RENDERBUFFER,
 					InternalFormat,
 					width,
 					height);
+				Unbind();
 			}
 
 			inline void Parameter(GLenum pname) const {
