@@ -53,3 +53,12 @@ target_link_libraries(${BUILD_TARGET}
 	gl3w
 	${GLFW3_LIBRARIES}
 )
+
+########## TESTING
+
+# googletest
+add_subdirectory(txbase_tests/libs/gtest)
+
+enable_testing()
+set(TEST_TARGET ${BUILD_TARGET}_tests)
+include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES})
