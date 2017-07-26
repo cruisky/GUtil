@@ -1,10 +1,13 @@
 #pragma once
 
-#include "txbase/fwddecl.h"
+#include <iostream>
 #include "txbase/math/base.h"
 #include "txbase/math/vector.h"
 
 namespace TX{
+	class Matrix3x3;
+	class Matrix4x4;
+
 	class Matrix3x3 {
 	public:
 		static const Matrix3x3 IDENTITY;

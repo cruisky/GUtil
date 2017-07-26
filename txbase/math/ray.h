@@ -1,6 +1,5 @@
 #pragma once
 
-#include "txbase/fwddecl.h"
 #include "txbase/math/vector.h"
 
 namespace TX {

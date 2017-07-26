@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ctime>
-#include "txbase/fwddecl.h"
 #include "txbase/sys/memory.h"
 
 namespace TX{

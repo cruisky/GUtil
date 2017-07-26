@@ -58,7 +58,7 @@ namespace TX
 	}
 
 	template <typename T>
-	inline T* AllocAligned(uint count, size_t alignment = 64) {
+	inline T* AllocAligned(uint32_t count, size_t alignment = 64) {
 		void* memptr;
 
 #ifdef _MSC_VER
@@ -84,11 +84,11 @@ namespace TX
 
 	class MemoryArena {
 	private:
-		uint currBlockPos, blockSize;
+		uint32_t currBlockPos, blockSize;
 		char *currBlock;
 		std::vector<char *> used, available;
 	public:
-		MemoryArena(uint blockSize = 32768) :
+		MemoryArena(uint32_t blockSize = 32768) :
 			currBlockPos(0),
 			blockSize(blockSize){
 			currBlock = AllocAligned<char>(blockSize);
@@ -102,7 +102,7 @@ namespace TX
 		}
 
 		template <typename T>
-		inline T* Alloc(uint count = 1) {
+		inline T* Alloc(uint32_t count = 1) {
 			size_t size = sizeof(T) * count;
 			size = ((size + 15) & (~15));							// round up to 16 bytes alignment
 			if (currBlockPos + size > blockSize) {					// if current block doesn't have enough room

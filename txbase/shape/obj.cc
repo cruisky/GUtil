@@ -25,7 +25,7 @@ namespace TX
 
 		assert((origin.mesh.positions.size() % 3) == 0);
 		dest.mesh.vertices.reserve(origin.mesh.positions.size() / 3);
-		for (uint i = 0; i < origin.mesh.positions.size(); i += 3){
+		for (uint32_t i = 0; i < origin.mesh.positions.size(); i += 3){
 			dest.mesh.vertices.emplace_back(
 				origin.mesh.positions[i],
 				origin.mesh.positions[i + 1],
@@ -34,7 +34,7 @@ namespace TX
 
 		assert((origin.mesh.normals.size() % 3) == 0);
 		dest.mesh.normals.reserve(origin.mesh.normals.size() / 3);
-		for (uint i = 0; i < origin.mesh.normals.size(); i += 3){
+		for (uint32_t i = 0; i < origin.mesh.normals.size(); i += 3){
 			dest.mesh.normals.emplace_back(
 				origin.mesh.normals[i],
 				origin.mesh.normals[i + 1],
@@ -43,7 +43,7 @@ namespace TX
 
 		assert((origin.mesh.texcoords.size() % 2) == 0);
 		dest.mesh.uv.reserve(origin.mesh.texcoords.size() / 2);
-		for (uint i = 0; i < origin.mesh.texcoords.size(); i += 2){
+		for (uint32_t i = 0; i < origin.mesh.texcoords.size(); i += 2){
 			dest.mesh.uv.emplace_back(
 				origin.mesh.texcoords[i],
 				origin.mesh.texcoords[i + 1]);
@@ -88,11 +88,11 @@ namespace TX
 		}
 
 		objects.resize(objs.size());
-		for (uint i = 0; i < objs.size(); i++)
+		for (uint32_t i = 0; i < objs.size(); i++)
 			ConvertObj(&objs[i], objects[i]);
 
 		materials.resize(mtls.size());
-		for (uint i = 0; i < mtls.size(); i++)
+		for (uint32_t i = 0; i < mtls.size(); i++)
 			ConvertMtl(&mtls[i], materials[i]);
 	}
 }

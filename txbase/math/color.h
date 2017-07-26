@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include "txbase/fwddecl.h"
 #include "txbase/math/base.h"
 
 #ifdef RGB

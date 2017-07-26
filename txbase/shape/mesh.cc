@@ -28,9 +28,9 @@ namespace TX {
 		bbox_dirty_ = true;
 	}
 
-	bool Mesh::Intersect(uint triId, const Ray& ray) const {
+	bool Mesh::Intersect(uint32_t triId, const Ray& ray) const {
 		// Moller-Trumbore algorithm
-		const uint* idx = GetIndicesOfTriangle(triId);
+		const uint32_t* idx = GetIndicesOfTriangle(triId);
 		const Vec3& v0 = vertices[*idx];
 		const Vec3 e1 = vertices[*(++idx)] - v0;
 		const Vec3 e2 = vertices[*(++idx)] - v0;
@@ -57,8 +57,8 @@ namespace TX {
 		ray.t_max = t;
 		return true;
 	}
-	bool Mesh::Occlude(uint triId, const Ray& ray) const {
-		const uint* idx = GetIndicesOfTriangle(triId);
+	bool Mesh::Occlude(uint32_t triId, const Ray& ray) const {
+		const uint32_t* idx = GetIndicesOfTriangle(triId);
 		const Vec3& v0 = vertices[*idx];
 		const Vec3 e1 = vertices[*(++idx)] - v0;
 		const Vec3 e2 = vertices[*(++idx)] - v0;
@@ -79,27 +79,27 @@ namespace TX {
 	}
 	float Mesh::Area() const {
 		float area = 0.f;
-		for (uint i = 0; i < indices.size(); i += 3) {
+		for (uint32_t i = 0; i < indices.size(); i += 3) {
 			area += Area(i);
 		}
 		return area;
 	}
-	float Mesh::Area(uint triId) const {
+	float Mesh::Area(uint32_t triId) const {
 		assert(triId % 3 == 0);
 		return 0.5f * Math::Length(Math::Cross(vertices[indices[triId + 1]] - vertices[indices[triId]],
 			vertices[indices[triId + 2]] - vertices[indices[triId]]));
 	}
-	Mesh& Mesh::LoadSphere(float radius, uint slices, uint stacks) {
+	Mesh& Mesh::LoadSphere(float radius, uint32_t slices, uint32_t stacks) {
 		Clear();
 
 		#pragma region vertices
 		vertices.reserve((slices+1) * stacks + 2);
 		vertices.push_back(Vec3::Z * radius);
-		for (uint lat = 0; lat < stacks; lat++) {
+		for (uint32_t lat = 0; lat < stacks; lat++) {
 			float a1 = Math::PI * float(lat + 1) / (stacks + 1);
 			float rsin1 = Math::Sin(a1) * radius;
 			float rcos1 = Math::Cos(a1) * radius;
-			for (uint lon = 0; lon <= slices; lon++) {
+			for (uint32_t lon = 0; lon <= slices; lon++) {
 				float a2 = (2.f * Math::PI) * float(lon == slices ? 0 : lon) / slices;
 				float sin2 = Math::Sin(a2);
 				float cos2 = Math::Cos(a2);
@@ -120,30 +120,30 @@ namespace TX {
 		#pragma region uvs
 		uv.reserve(vertices.size());
 		uv.emplace_back(0.f, 1.f);
-		for (uint lat = 0; lat < stacks; lat++)
-			for (uint lon = 0; lon <= slices; lon++)
+		for (uint32_t lat = 0; lat < stacks; lat++)
+			for (uint32_t lon = 0; lon <= slices; lon++)
 				uv.emplace_back(float(lon) / slices, 1.f - float(lat + 1) / (stacks + 1));
 		uv.emplace_back(0.f, 0.f);
 		#pragma endregion
 
 		#pragma region indices
-		const uint faceCount = vertices.size();
-		const uint triCount = faceCount * 2;
-		const uint indexCount = triCount * 3;
+		const uint32_t faceCount = vertices.size();
+		const uint32_t triCount = faceCount * 2;
+		const uint32_t indexCount = triCount * 3;
 		indices.reserve(indexCount);
 
 		// top cap
-		for (uint lon = 0; lon < slices; lon++) {
+		for (uint32_t lon = 0; lon < slices; lon++) {
 			indices.push_back(0);
 			indices.push_back(lon + 1);
 			indices.push_back(lon + 2);
 		}
 
 		// middle
-		for (uint lat = 0; lat < stacks - 1; lat++) {
-			for (uint lon = 0; lon < slices; lon++) {
-				uint curr = lon + lat  * (slices + 1) + 1;
-				uint next = curr + slices + 1;
+		for (uint32_t lat = 0; lat < stacks - 1; lat++) {
+			for (uint32_t lon = 0; lon < slices; lon++) {
+				uint32_t curr = lon + lat  * (slices + 1) + 1;
+				uint32_t next = curr + slices + 1;
 
 				indices.push_back(curr);
 				indices.push_back(next);
@@ -156,7 +156,7 @@ namespace TX {
 		}
 
 		// bottom cap
-		for (uint lon = 0; lon < slices; lon++) {
+		for (uint32_t lon = 0; lon < slices; lon++) {
 			indices.push_back(vertices.size() - 1);
 			indices.push_back(vertices.size() - lon - 2);
 			indices.push_back(vertices.size() - lon - 3);
@@ -212,36 +212,36 @@ namespace TX {
 		vertices.emplace_back(+hs, +hs, -hs);
 		vertices.emplace_back(+hs, -hs, +hs);
 		vertices.emplace_back(+hs, -hs, -hs);
-		for (uint i = 0; i < 4; i++) normals.push_back(Vec3::X);
+		for (uint32_t i = 0; i < 4; i++) normals.push_back(Vec3::X);
 		vertices.emplace_back(-hs, +hs, -hs);	// -X face
 		vertices.emplace_back(-hs, +hs, +hs);
 		vertices.emplace_back(-hs, -hs, -hs);
 		vertices.emplace_back(-hs, -hs, +hs);
-		for (uint i = 0; i < 4; i++) normals.push_back(-Vec3::X);
+		for (uint32_t i = 0; i < 4; i++) normals.push_back(-Vec3::X);
 		vertices.emplace_back(-hs, +hs, -hs);	// +Y face
 		vertices.emplace_back(+hs, +hs, -hs);
 		vertices.emplace_back(-hs, +hs, +hs);
 		vertices.emplace_back(+hs, +hs, +hs);
-		for (uint i = 0; i < 4; i++) normals.push_back(Vec3::Y);
+		for (uint32_t i = 0; i < 4; i++) normals.push_back(Vec3::Y);
 		vertices.emplace_back(-hs, -hs, +hs);	// -Y face
 		vertices.emplace_back(+hs, -hs, +hs);
 		vertices.emplace_back(-hs, -hs, -hs);
 		vertices.emplace_back(+hs, -hs, -hs);
-		for (uint i = 0; i < 4; i++) normals.push_back(-Vec3::Y);
+		for (uint32_t i = 0; i < 4; i++) normals.push_back(-Vec3::Y);
 		vertices.emplace_back(-hs, +hs, +hs);	// +Z face
 		vertices.emplace_back(+hs, +hs, +hs);
 		vertices.emplace_back(-hs, -hs, +hs);
 		vertices.emplace_back(+hs, -hs, +hs);
-		for (uint i = 0; i < 4; i++) normals.push_back(Vec3::Z);
+		for (uint32_t i = 0; i < 4; i++) normals.push_back(Vec3::Z);
 		vertices.emplace_back(+hs, +hs, -hs);	// -Z face
 		vertices.emplace_back(-hs, +hs, -hs);
 		vertices.emplace_back(+hs, -hs, -hs);
 		vertices.emplace_back(-hs, -hs, -hs);
-		for (uint i = 0; i < 4; i++) normals.push_back(-Vec3::Z);
+		for (uint32_t i = 0; i < 4; i++) normals.push_back(-Vec3::Z);
 
 		indices.reserve(6 * 2 * 3);
-		for (uint f = 0; f < 6; f++) {
-			uint off = f * 4;
+		for (uint32_t f = 0; f < 6; f++) {
+			uint32_t off = f * 4;
 			indices.push_back(off+0);
 			indices.push_back(off+2);
 			indices.push_back(off+1);
@@ -251,7 +251,7 @@ namespace TX {
 		}
 
 		uv.reserve(6 * 4);
-		for (uint i = 0; i < 6; i++) {
+		for (uint32_t i = 0; i < 6; i++) {
 			uv.push_back(Vec2(0, 1));
 			uv.push_back(Vec2(1, 1));
 			uv.push_back(Vec2(0, 0));
@@ -263,12 +263,12 @@ namespace TX {
 
 	MeshSampler::MeshSampler(std::shared_ptr<const Mesh> mesh) : mesh(mesh){
 		sumArea = 0.f;
-		const uint idxCount = mesh->indices.size();
-		const uint triCount = idxCount / 3;
+		const uint32_t idxCount = mesh->indices.size();
+		const uint32_t triCount = idxCount / 3;
 		assert(idxCount % 3 == 0);
 
 		areas.reserve(triCount);
-		for (uint i = 0; i < idxCount; i += 3) {
+		for (uint32_t i = 0; i < idxCount; i += 3) {
 			float a = mesh->Area(i);
 			areas.push_back(a);
 			sumArea += a;
@@ -276,7 +276,7 @@ namespace TX {
 		sumAreaRcp = 1.f / sumArea;
 		areaDistro = std::make_unique<Distribution1D>(&areas[0], triCount);
 	}
-	void MeshSampler::SamplePoint(const Sample *sample, Vec3 *point, uint *id, Vec3 *normal) const {
+	void MeshSampler::SamplePoint(const Sample *sample, Vec3 *point, uint32_t *id, Vec3 *normal) const {
 		int triId = areaDistro->SampleDiscrete(sample->w, nullptr);
 		float barycentricU, barycentricV;
 		Sampling::UniformTriangle(sample->u, sample->v, &barycentricU, &barycentricV);
@@ -284,7 +284,7 @@ namespace TX {
 		if (id) *id = triId;
 	}
 
-	float MeshSampler::Pdf(uint triId, const Ray& wi) const {
+	float MeshSampler::Pdf(uint32_t triId, const Ray& wi) const {
 		if (!mesh->Intersect(triId, wi))
 			return 0.f;
 		Vec3 normal;
@@ -292,7 +292,7 @@ namespace TX {
 		float pdf = wi.t_max * wi.t_max / (Math::AbsDot(normal, wi.dir) * sumArea);		// solid angle measure
 		return std::isinf(pdf) ? 0.f : pdf;
 	}
-	float MeshSampler::Pdf(uint triId, const Vec3& point) const {
+	float MeshSampler::Pdf(uint32_t triId, const Vec3& point) const {
 		return sumAreaRcp;
 	}
 }

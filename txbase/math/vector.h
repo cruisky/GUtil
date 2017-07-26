@@ -1,6 +1,8 @@
 #pragma once
 
-#include "base.h"
+#include <cstdint>
+#include <iostream>
+#include "txbase/math/base.h"
 
 namespace TX
 {
@@ -360,4 +362,14 @@ namespace TX
 		template <typename T>
 		inline Vec<4, T> Lerp(float t, const Vec<4, T>& v1, const Vec<4, T>& v2) { return Vec<4, T>(Lerp(t, v1.x, v2.x), Lerp(t, v1.y, v2.y), Lerp(t, v1.z, v2.z), Lerp(t, v1.w, v2.w)); }
 	}
+
+	typedef Vec<2, float> Vec2;
+	typedef Vec<2, int> Vec2i;
+	typedef Vec<2, uint32_t> Vec2u;
+	typedef Vec<3, float> Vec3;
+	typedef Vec<3, int> Vec3i;
+	typedef Vec<3, uint32_t> Vec3u;
+	typedef Vec<4, float> Vec4;
+	typedef Vec<4, int> Vec4i;
+	typedef Vec<4, uint32_t> Vec4u;
 }

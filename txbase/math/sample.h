@@ -75,14 +75,14 @@ namespace TX{
 	public:
 		float *func, *cdf;		// samples and cumulative distro function
 		float funcInt;			// integral
-		uint count;
+		uint32_t count;
 	public:
 		/// <summary>
 		/// Constructor of Distribution1D.
 		/// </summary>
 		/// <param name="f"> An array of samples representing the distribution function </param>
 		/// <param name="n"> Number of samples </param>
-		Distribution1D(const float *f, uint n);
+		Distribution1D(const float *f, uint32_t n);
 		~Distribution1D();
 		/// <summary>
 		/// Take sample as continuous distribution.
@@ -91,14 +91,14 @@ namespace TX{
 		/// <param name="pdf"> Pdf at the sampled point </param>
 		/// <param name="off"> Offset of the section where sample is taken from </param>
 		/// <returns> [0, 1) </returns>
-		float SampleContinuous(float u, float *pdf, uint *off = nullptr);
+		float SampleContinuous(float u, float *pdf, uint32_t *off = nullptr);
 		/// <summary>
 		/// Take sample as discrete distribution.
 		/// </summary>
 		/// <param name="u"> Random sample </param>
 		/// <param name="pdf"> Pdf at the sample point </param>
 		/// <returns> The sample offset </returns>
-		uint SampleDiscrete(float u, float *pdf);
+		uint32_t SampleDiscrete(float u, float *pdf);
 	};
 
 	namespace Sampling {

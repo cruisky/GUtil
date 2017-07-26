@@ -18,8 +18,8 @@ namespace TX
 			return Math::Clamp(min + int(rng.Float() * (max - min)), min, max - 1);
 		}
 		/* excluding the max */
-		inline uint RandomUint(uint min = 0, uint max = Math::MAX) {
-			return Math::Clamp(min + uint(rng.Float() * (max - min)), min, max - 1);
+		inline uint32_t RandomUint(uint32_t min = 0, uint32_t max = Math::MAX) {
+			return Math::Clamp(min + uint32_t(rng.Float() * (max - min)), min, max - 1);
 		}
 		inline float RandomFloat(float absmin = 1e-6f, float absmax = 1.f, bool bothsign = false){
 			float f;

@@ -39,7 +39,7 @@ namespace TX {
 
 	class ObjMesh : public Mesh {
 	public:
-		std::vector<uint>		materials;
+		std::vector<uint32_t>		materials;
 	public:
 		ObjMesh() : Mesh() {}
 		void LoadQuad(

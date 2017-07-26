@@ -61,7 +61,7 @@ namespace TX
 			std::unique_lock<std::mutex> lock(tasks_mutex_);
 			task_available_cv_.notify_all();
 		}
-		for (uint i = 0; i < threads.size(); i++){
+		for (uint32_t i = 0; i < threads.size(); i++){
 			threads[i].join();
 		}
 		threads.clear();

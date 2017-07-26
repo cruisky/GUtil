@@ -30,7 +30,7 @@ namespace TX {
 			virtual bool Render() { return false; }
 
 			virtual void OnKey(KeyCode code, KeyState state, Modifiers modifiers) {}
-			virtual void OnText(uint code, Modifiers modifiers) {}
+			virtual void OnText(uint32_t code, Modifiers modifiers) {}
 			virtual void OnMouseMove(float x, float y) {}
 			virtual void OnMouseScroll(float vx, float vy) {}
 			virtual void OnMouseButton(MouseButton button, MouseButtonState state, Modifiers mods) {}
@@ -56,8 +56,8 @@ namespace TX {
 		private:
 			static Application * This(GLFWwindow *window);
 			static void GLFWKey(GLFWwindow *window, int key, int scancode, int action, int mods);
-			static void GLFWChar(GLFWwindow *window, uint codepoint);
-// 			static void GLFWCharMods(GLFWwindow *window, uint codepoint, int mods);
+			static void GLFWChar(GLFWwindow *window, uint32_t codepoint);
+// 			static void GLFWCharMods(GLFWwindow *window, uint32_t codepoint, int mods);
 			static void GLFWCursorPos(GLFWwindow *window, double x, double y);
 			static void GLFWMouseButton(GLFWwindow *window, int b, int s, int mods);
 			static void GLFWMouseScroll(GLFWwindow *window, double xoff, double yoff);
@@ -90,7 +90,7 @@ namespace TX {
 				input.SetKeyCode(code, state);
 				input.AddModifiers(modifiers);
 			}
-			void OnText(uint code, Modifiers modifiers) {
+			void OnText(uint32_t code, Modifiers modifiers) {
 				input.SetText(code);
 				input.AddModifiers(modifiers);
 			}

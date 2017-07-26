@@ -102,10 +102,10 @@ namespace TX {
 		}
 
 		// TODO replace with GLFWCharMods in 3.1
-		void Application::GLFWChar(GLFWwindow *window, uint codepoint) {
+		void Application::GLFWChar(GLFWwindow *window, uint32_t codepoint) {
 			This(window)->OnText(codepoint, 0);
 		}
-// 		void Application::GLFWCharMods(GLFWwindow *window, uint codepoint, int mods) {
+// 		void Application::GLFWCharMods(GLFWwindow *window, uint32_t codepoint, int mods) {
 // 			This(window)->OnText(codepoint, mods);
 // 		}
 		void Application::GLFWCursorPos(GLFWwindow *window, double x, double y) {

@@ -8,7 +8,7 @@
 namespace TX { namespace UI { namespace GUI {
 	class Window {
 	public:
-		const uint		id;
+		const uint32_t	id;
 		DrawList		drawList;
 		bool			accessed;
 		bool			folded;
@@ -16,16 +16,16 @@ namespace TX { namespace UI { namespace GUI {
 		float			scroll;
 		void Reset(){ accessed = false; drawList.Clear(); }
 		const Rect& GetClipRect(){ return drawList.clipRectStack.back(); }
-		static uint GetID(const std::string& name){
+		static uint32_t GetID(const std::string& name){
 			// sdbm
-			uint hash = 0;
+			uint32_t hash = 0;
 			for (const char& c : name){
 				hash = c + (hash << 6) + (hash << 16) - hash;	// hash(i) = hash(i - 1) * 65599 + str[i];
 			}
 			return hash;
 		}
 	public:
-		Window(uint id) :
+		Window(uint32_t id) :
 			id(id),
 			accessed(false),
 			folded(false),
@@ -36,8 +36,8 @@ namespace TX { namespace UI { namespace GUI {
 	// Ids that uniquely identify a widget inside a window
 	struct Widget {
 		Window*		window = nullptr;
-		uint		itemId = 0;
-		uint		index = 0;
+		uint32_t		itemId = 0;
+		uint32_t		index = 0;
 		Widget() : window(nullptr), itemId(0), index(0){}
 		Widget(const Widget& ot) : window(ot.window), itemId(ot.itemId), index(ot.index){}
 		Widget& operator = (const Widget& ot){ window = ot.window; itemId = ot.itemId; index = ot.index; return *this; }
@@ -73,8 +73,8 @@ namespace TX { namespace UI { namespace GUI {
 			GlyphPosMap		glyphPosMap;	// size = len + 1
 			Widget			id;
 			float			offset;
-			uint			cursor;			// [0, len]
-			uint			selectionBegin;
+			uint32_t		cursor;			// [0, len]
+			uint32_t		selectionBegin;
 
 			bool Edit(char ch){
 				bool changed = false;
@@ -233,7 +233,7 @@ namespace TX { namespace UI { namespace GUI {
 			Window *result = nullptr;
 
 			// search for existing windows
-			uint id = Window::GetID(name);
+			uint32_t id = Window::GetID(name);
 			for (Window *w : windows) {
 				if (w->id == id) {
 					result = w;
@@ -408,7 +408,7 @@ namespace TX { namespace UI { namespace GUI {
 			Window *window = G.active.window;
 			// move the window to the end (skip root window)
 			if (window != G.windows.back() && window->id != 0) {
-				for (uint i = 1; i < G.windows.size(); i++) {
+				for (uint32_t i = 1; i < G.windows.size(); i++) {
 					if (G.windows[i] == window) {
 						G.windows.erase(G.windows.begin() + i);
 						break;

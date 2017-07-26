@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.2)
 
-set(BUILD_TARGET txbase)
-project(txbase)
+project(txbase C CXX)
 
 #vscode-cmake-tools target debugging
 include(CMakeToolsHelpers OPTIONAL)
@@ -29,36 +28,7 @@ endif()
 #   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 # endif()
 
-
-file(GLOB_RECURSE BUILD_SOURCE "txbase/*.cc" "txbase/*.h")
-add_library(${BUILD_TARGET} STATIC ${BUILD_SOURCE})
-
-target_include_directories(${BUILD_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-########## DEPENDENCIES
-
-# gl3w: dependency of imgui and the app
-add_subdirectory(txbase/libs/gl3w)
-
-# glfw3
-find_package(glfw3 REQUIRED)
-target_include_directories(${BUILD_TARGET} PUBLIC ${GLFW3_INCLUDE_DIRS})
-
-# opengl
-find_package(OpenGL REQUIRED)
-target_include_directories(${BUILD_TARGET} PUBLIC ${OPENGL_INCLUDE_DIRS})
-
-target_link_libraries(${BUILD_TARGET}
-	${OPENGL_LIBRARIES}
-	gl3w
-	${GLFW3_LIBRARIES}
-)
-
-########## TESTING
-
-# googletest
-add_subdirectory(txbase_tests/libs/gtest)
+add_subdirectory(txbase)
 
 enable_testing()
-set(TEST_TARGET ${BUILD_TARGET}_tests)
-include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES})
+add_subdirectory(txbase_tests)

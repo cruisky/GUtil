@@ -12,7 +12,7 @@ namespace TX {
 	public:
 		std::vector<Vec3> vertices;
 		std::vector<Vec3> normals;
-		std::vector<uint> indices;
+		std::vector<uint32_t> indices;
 		std::vector<Vec2> uv;
 	private:
 		mutable BBox bbox_;
@@ -33,12 +33,12 @@ namespace TX {
 		}
 		~Mesh() {}
 
-		inline uint VertexCount() const { return vertices.size(); }
-		inline uint IndexCount() const { return indices.size(); }
-		inline uint TriangleCount() const { return indices.size() / 3; }
-		inline const uint* GetIndicesOfTriangle(uint triId) const { return &indices[triId * 3]; }
-		inline void GetPoint(uint triId, float u, float v, Vec3 *out, Vec3 *normal) const {
-			const uint *idx = GetIndicesOfTriangle(triId);
+		inline uint32_t VertexCount() const { return vertices.size(); }
+		inline uint32_t IndexCount() const { return indices.size(); }
+		inline uint32_t TriangleCount() const { return indices.size() / 3; }
+		inline const uint32_t* GetIndicesOfTriangle(uint32_t triId) const { return &indices[triId * 3]; }
+		inline void GetPoint(uint32_t triId, float u, float v, Vec3 *out, Vec3 *normal) const {
+			const uint32_t *idx = GetIndicesOfTriangle(triId);
 			const Vec3& v0 = vertices[*idx];
 			const Vec3 e1 = vertices[*(++idx)] - v0;
 			const Vec3 e2 = vertices[*(++idx)] - v0;
@@ -67,7 +67,7 @@ namespace TX {
 		/// <param name="radius"> Radius of the sphere </param>
 		/// <param name="slices"> Number of slices (meridian) </param>
 		/// <param name="stacks"> Number of stacks (ring of latitude on xz plane) </param>
-		Mesh& LoadSphere(float radius = 1.f, uint slices = 72, uint stacks = 48);
+		Mesh& LoadSphere(float radius = 1.f, uint32_t slices = 72, uint32_t stacks = 48);
 		/// <summary>
 		/// Load a plane to this mesh.
 		/// The plane faces towards z-axis.
@@ -84,9 +84,9 @@ namespace TX {
 		/// </summary>
 		virtual void ApplyTransform(const Transform& transform);
 		float Area() const;
-		float Area(uint triId) const;
-		bool Intersect(uint triId, const Ray& ray) const;
-		bool Occlude(uint triId, const Ray& ray) const;
+		float Area(uint32_t triId) const;
+		bool Intersect(uint32_t triId, const Ray& ray) const;
+		bool Occlude(uint32_t triId, const Ray& ray) const;
 	};
 
 	class MeshSampler {
@@ -98,9 +98,9 @@ namespace TX {
 	public:
 		MeshSampler(std::shared_ptr<const Mesh> mesh);
 		inline float Area() const { return sumArea; }
-		void SamplePoint(const Sample *sample, Vec3 *point, uint *id, Vec3 *normal) const;
+		void SamplePoint(const Sample *sample, Vec3 *point, uint32_t *id, Vec3 *normal) const;
 
-		float Pdf(uint id, const Ray& wi) const;
-		float Pdf(uint id, const Vec3& p) const;
+		float Pdf(uint32_t id, const Ray& wi) const;
+		float Pdf(uint32_t id, const Vec3& p) const;
 	};
 }

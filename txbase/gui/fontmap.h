@@ -32,11 +32,11 @@ namespace TX {
 		bool GetChar(const char& ch, Vec2& pos, Rect *rect, Rect *uv = nullptr, GlyphPosMap *posMap = nullptr) const;
 		float GetWidth(char c) const;
 		float GetWidth(const std::string& str) const;
-		inline uint TexID() const { return texID_; }
+		inline uint32_t TexID() const { return texID_; }
 		inline float Height() const { return fontHeight_; }
 	private:
 		static const int bitmapSize = 512;	// no guarantee this fits
-		uint texID_;
+		uint32_t texID_;
 		float fontHeight_;
 		void *data_;
 	};

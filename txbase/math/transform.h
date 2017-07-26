@@ -1,10 +1,11 @@
 #pragma once
-#include "txbase/fwddecl.h"
 #include "txbase/math/quaternion.h"
 #include "txbase/math/matrix.h"
 #include "txbase/math/ray.h"
 
 namespace TX{
+	class Ray;
+
 	enum class Space {
 		LOCAL, WORLD
 	};
