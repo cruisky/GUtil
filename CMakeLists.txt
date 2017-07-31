@@ -5,7 +5,7 @@ project(txbase C CXX)
 #vscode-cmake-tools target debugging
 include(CMakeToolsHelpers OPTIONAL)
 
-# set(CMAKE_VERBOSE_MAKEFILE 1)
+set(CMAKE_VERBOSE_MAKEFILE 1)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 set(CMAKE_CXX_STANDARD 14)
 
@@ -15,6 +15,7 @@ if(MSVC)
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3 -msse4.1")
 endif()
+
 # http://stackoverflow.com/questions/2368811/how-to-set-warning-level-in-cmake
 # if(MSVC)
 #   # Force to always compile with W4

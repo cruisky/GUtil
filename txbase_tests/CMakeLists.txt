@@ -44,7 +44,7 @@ add_custom_command(
 	TARGET ${BUILD_TARGET}
 	COMMENT "Run ${BUILD_TARGET}"
 	POST_BUILD
-	COMMAND ${BUILD_TARGET} --gtest_filter=BoolTests.* # > ${OUTPUT_FILE} || (cat ${OUTPUT_FILE} && false)
+	COMMAND ${BUILD_TARGET} #--gtest_filter=MathUtilTests.* > ${OUTPUT_FILE} || (cat ${OUTPUT_FILE} && false)
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	USES_TERMINAL
 )
