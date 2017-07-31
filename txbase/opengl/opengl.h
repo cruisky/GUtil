@@ -86,6 +86,9 @@ namespace TX
 			~Shader();
 
 			std::string GetLog();
+
+		public:
+			const std::string source;
 		};
 
 		class ITexture {

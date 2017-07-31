@@ -22,10 +22,10 @@ namespace TX
 				std::cerr << "Shader file: " << file << std::endl;
 				throw;
 			}
-		Shader::Shader(GLenum type, const std::string& src){
+		Shader::Shader(GLenum type, const std::string& src) : source(src) {
 			id = glCreateShader(type);
-			const char *srcStr = src.c_str();
-			glShaderSource(id, 1, &srcStr, NULL);
+			const char *sourceString = source.c_str();
+			glShaderSource(id, 1, &sourceString, NULL);
 			glCompileShader(id);
 			GLint status = GL_FALSE;
 			glGetShaderiv(id, GL_COMPILE_STATUS, &status);
