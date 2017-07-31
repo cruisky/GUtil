@@ -11,6 +11,7 @@ matrix:
             - sourceline: 'ppa:keithw/glfw3'
           packages:
             - g++-5
+            - g++-5-multilib
             - libglfw3
             - libxrandr-dev
             - libxcursor-dev

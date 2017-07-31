@@ -4,6 +4,7 @@ set(BUILD_TARGET txbase_tests)
 
 # googletest
 add_subdirectory(libs/gtest)
+find_package(Threads)
 
 file(GLOB_RECURSE BUILD_SOURCE "./*.cc")
 message(STATUS "txbase test sources: " ${BUILD_SOURCE})
@@ -43,7 +44,7 @@ add_custom_command(
 	TARGET ${BUILD_TARGET}
 	COMMENT "Run ${BUILD_TARGET}"
 	POST_BUILD
-	COMMAND ${BUILD_TARGET} # > ${OUTPUT_FILE} || (cat ${OUTPUT_FILE} && false)
+	COMMAND ${BUILD_TARGET} --gtest_filter=BoolTests.* # > ${OUTPUT_FILE} || (cat ${OUTPUT_FILE} && false)
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	USES_TERMINAL
 )

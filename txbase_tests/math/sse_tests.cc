@@ -160,5 +160,19 @@ namespace TX
 			EXPECT_EQ(3, SelectMax(V4Float(1, 2, 3, 4)));
 			EXPECT_EQ(1, SelectMax(V4Float(-1, 2, 0, 1)));
 		}
+
+		TEST(BoolTests, bsf) {
+			Assertions::Equal(0, __bsf(0x1));
+			Assertions::Equal(1, __bsf(0x2));
+			Assertions::Equal(2, __bsf(0x4));
+			Assertions::Equal(2, __bsf(0xC));
+		}
+
+		TEST(BoolTests, bsr) {
+			Assertions::Equal(0, __bsr(0x1));
+			Assertions::Equal(1, __bsr(0x2));
+			Assertions::Equal(2, __bsr(0x4));
+			Assertions::Equal(3, __bsr(0xC));
+		}
 	}
 }

@@ -6,11 +6,6 @@ namespace TX
 	using namespace Math;
 	namespace Tests
 	{
-
-		class RayTests: public ::testing::Test
-		{
-		};
-
 		TEST(RayTests, SetSegment) {
 			Ray ray;
 			{

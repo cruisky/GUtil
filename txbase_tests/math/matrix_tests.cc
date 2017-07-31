@@ -5,10 +5,6 @@ namespace TX
 {
 	namespace Tests
 	{
-		class Matrix4x4Tests : public ::testing::Test
-		{
-		};
-
 		TEST(Matrix4x4Tests, Operator_Multiply) {
 			Matrix4x4 a(
 				1, 2, 3, 4,

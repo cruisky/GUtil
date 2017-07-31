@@ -29,6 +29,9 @@ namespace TX
 				constexpr inline operator double() const { return 1e-6; }
 			} TOLERANCE;
 
+			template<typename T, size_t N> void VEqual(const T& expected, const T& actual);
+			template<typename T, size_t N> void VNear(const T& expected, const T& actual);
+
 			inline void Near(float expected, float actual) {
 				EXPECT_NEAR(expected, actual, float(TOLERANCE));
 			}
@@ -37,38 +40,18 @@ namespace TX
 			}
 			template <typename T>
 			inline void Equal(const T& expected, const T& actual) {
-				SCOPED_TRACE(TypeName<T>::Get());
+				SCOPED_TRACE(::testing::Message() << "type: " << TypeName<T>::Get());
 				EXPECT_EQ(expected, actual);
 			}
 
-			template<typename T, size_t N>
-			inline void Near(const T& expected, const T& actual) {
-				SCOPED_TRACE(::testing::Message() << "comparing with tolerance: " << TypeName<T>::Get() << std::endl
-					<< "[Expected] " << std::endl << expected << std::endl
-					<< "[Actual] " << std::endl << actual << std::endl);
-				for (size_t i = 0; i < N; i++){
-					SCOPED_TRACE(::testing::Message() << "at element " << i);
-					Assertions::Near(expected[i], actual[i]);
-				}
-			}
-			template<typename T, size_t N>
-			inline void Equal(const T& expected, const T& actual) {
-				SCOPED_TRACE(::testing::Message() << "comparing: " << TypeName<T>::Get() << std::endl
-					<< "[Expected]" << std::endl << expected << std::endl
-					<< "[Actual]" << std::endl << actual << std::endl);
-				for (size_t i = 0; i < N; i++){
-					SCOPED_TRACE(::testing::Message() << "at element " << i);
-					Assertions::Equal(expected[i], actual[i]);
-				}
-			}
 			inline void Near(const Vec4& expected, const Vec4& actual) {
-				Assertions::Near<Vec4, 4>(expected, actual);
+				Assertions::VNear<Vec4, 4>(expected, actual);
 			}
 			inline void Near(const Color& expected, const Color& actual) {
-				Assertions::Near<Color, 3>(expected, actual);
+				Assertions::VNear<Color, 3>(expected, actual);
 			}
 			inline void Near(const Vec3& expected, const Vec3& actual) {
-				Assertions::Near<Vec3, 3>(expected, actual);
+				Assertions::VNear<Vec3, 3>(expected, actual);
 			}
 			inline void Near(const Ray& expected, const Ray& actual) {
 				{
@@ -89,7 +72,7 @@ namespace TX
 				}
 			}
 			inline void Near(const Matrix4x4& expected, const Matrix4x4& actual){
-				Assertions::Near<Matrix4x4, 4>(expected, actual);
+				Assertions::VNear<Matrix4x4, 4>(expected, actual);
 			}
 			inline void Near(const Quaternion& expected, const Quaternion& actual) {
 #define signof(f) ((f) >= 0 ? 1 : -1)
@@ -103,16 +86,38 @@ namespace TX
 			}
 
 			inline void Equal(const SSE::V4Bool& expected, const SSE::V4Bool& actual) {
-				Assertions::Equal<SSE::V4Bool, 4>(expected, actual);
+				Assertions::VEqual<SSE::V4Bool, 4>(expected, actual);
 			}
 			inline void Equal(const SSE::V4Int& expected, const SSE::V4Int& actual) {
-				Assertions::Equal<SSE::V4Int, 4>(expected, actual);
+				Assertions::VEqual<SSE::V4Int, 4>(expected, actual);
 			}
 			inline void Equal(const SSE::V4Float& expected, const SSE::V4Float& actual) {
-				Assertions::Equal<SSE::V4Float, 4>(expected, actual);
+				Assertions::VEqual<SSE::V4Float, 4>(expected, actual);
 			}
 			inline void Near(const SSE::V4Float& expected, const SSE::V4Float& actual) {
-				Assertions::Near<SSE::V4Float, 4>(expected, actual);
+				Assertions::VNear<SSE::V4Float, 4>(expected, actual);
+			}
+
+
+			template<typename T, size_t N>
+			void VNear(const T& expected, const T& actual) {
+				SCOPED_TRACE(::testing::Message() << "comparing with tolerance: " << TypeName<T>::Get() << std::endl
+					<< "[Expected] " << std::endl << expected << std::endl
+					<< "[Actual] " << std::endl << actual << std::endl);
+				for (size_t i = 0; i < N; i++){
+					SCOPED_TRACE(::testing::Message() << "at element " << i);
+					Near(expected[i], actual[i]);
+				}
+			}
+			template<typename T, size_t N>
+			void VEqual(const T& expected, const T& actual) {
+				SCOPED_TRACE(::testing::Message() << "comparing: " << TypeName<T>::Get() << std::endl
+					<< "[Expected]" << std::endl << expected << std::endl
+					<< "[Actual]" << std::endl << actual << std::endl);
+				for (size_t i = 0; i < N; i++){
+					SCOPED_TRACE(::testing::Message() << "at element " << i);
+					Equal(expected[i], actual[i]);
+				}
 			}
 		}
 	}

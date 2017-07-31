@@ -29,21 +29,15 @@
 
 namespace TX
 {
-#if defined(WIN32)
-	inline int __bsf(int v) { unsigned long r = 0; _BitScanForward(&r, v); return r; }
-	inline int __bsr(int v) { unsigned long r = 0; _BitScanReverse(&r, v); return r; }
+#if defined(WIN32) || defined(_WIN64)
+	inline int __bsf(uint32_t v) { unsigned long r = 0; _BitScanForward(&r, v); return r; }
+	inline int __bsr(uint32_t v) { unsigned long r = 0; _BitScanReverse(&r, v); return r; }
 	//inline int __btc(int v, int i) { long r = v; _bittestandcomplement(&r, i); return r; }
 	//inline int __bts(int v, int i) { long r = v; _bittestandset(&r, i); return r; }
 	//inline int __btr(int v, int i) { long r = v; _bittestandreset(&r, i); return r; }
-#elif defined(_WIN64)
-	inline size_t __bsf(size_t v) { size_t r = 0; _BitScanForward64((unsigned long*)&r, v); return r; }
-	inline size_t __bsr(size_t v) { size_t r = 0; _BitScanReverse64((unsigned long*)&r, v); return r; }
-	//inline size_t __btc(size_t v, size_t i) { return v ^ (size_t(1) << i); }
-	//inline size_t __bts(size_t v, size_t i) { __int64 r = v; _bittestandset64(&r, i); return r; }
-	//inline size_t __btr(size_t v, size_t i) { __int64 r = v; _bittestandreset64(&r, i); return r; }
 #else
-	inline int __bsf(int v) { return __builtin_ctz(v) - 1; }
-	inline int __bsr(int v) { return 31 - __builtin_clz(v); }
+	inline int __bsf(uint32_t v) { return __builtin_ctz(v); }
+	inline int __bsr(uint32_t v) { return 31 - __builtin_clz(v); }
 #endif
 
 	namespace SSE

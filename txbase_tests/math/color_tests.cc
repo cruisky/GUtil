@@ -1,13 +1,10 @@
-#include "gtest/gtest.h"
+#include "txbase_tests/helper.h"
 #include "txbase/math/color.h"
 
 namespace TX
 {
 	namespace Tests
 	{
-		class ColorTests : public ::testing::Test {
-		};
-
 		TEST(ColorTests, ClampTest){
 			EXPECT_EQ(Color(+.5f, +.5f, +.5f), Color(+.5f, +.5f, +.5f).Clamp());
 			EXPECT_EQ(Color(+1.f, +1.f, +1.f), Color(+1.f, +1.f, +1.f).Clamp());

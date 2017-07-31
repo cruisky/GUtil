@@ -13,7 +13,7 @@ if(MSVC)
 	add_definitions(/arch:SSE)
 	add_definitions(/arch:SSE2)
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -msse3 -msse4.1")
 endif()
 # http://stackoverflow.com/questions/2368811/how-to-set-warning-level-in-cmake
 # if(MSVC)

@@ -131,15 +131,15 @@ namespace TX {
 		inline const float ReduceMin(const V4Float& v) { return _mm_cvtss_f32(VReduceMin(v)); }
 		inline const float ReduceMax(const V4Float& v) { return _mm_cvtss_f32(VReduceMax(v)); }
 		inline const float ReduceAdd(const V4Float& v) { return _mm_cvtss_f32(VReduceAdd(v)); }
-		inline size_t SelectMin(const V4Float& v) {
+		inline int SelectMin(const V4Float& v) {
 			auto r = VReduceMin(v);
 			auto e = v == r;
-			int mask = _mm_movemask_ps(e);
+			uint32_t mask = _mm_movemask_ps(e);
 			return __bsf(mask);
 			//return __bsf(_mm_movemask_epi8(v == VReduceMin(v)));
 		}
-		inline size_t SelectMax(const V4Float& v) { return __bsf(_mm_movemask_ps(v == VReduceMax(v))); }
-		inline size_t SelectMin(const V4Bool& valid, const V4Float& v) { const V4Float f = Select(valid, v, V4Float::INF); return __bsf(_mm_movemask_ps(valid & (f == VReduceMin(f)))); }
-		inline size_t SelectMax(const V4Bool& valid, const V4Float& v) { const V4Float f = Select(valid, v, -V4Float::INF); return __bsf(_mm_movemask_ps(valid & (f == VReduceMax(f)))); }
+		inline int SelectMax(const V4Float& v) { return __bsf(_mm_movemask_ps(v == VReduceMax(v))); }
+		inline int SelectMin(const V4Bool& valid, const V4Float& v) { const V4Float f = Select(valid, v, V4Float::INF); return __bsf(_mm_movemask_ps(valid & (f == VReduceMin(f)))); }
+		inline int SelectMax(const V4Bool& valid, const V4Float& v) { const V4Float f = Select(valid, v, -V4Float::INF); return __bsf(_mm_movemask_ps(valid & (f == VReduceMax(f)))); }
 	}
 }

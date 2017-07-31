@@ -6,10 +6,6 @@ namespace TX
 	using namespace Math;
 	namespace Tests
 	{
-		class QuaternionTests : public ::testing::Test
-		{
-		};
-
 		TEST(QuaternionTests, Norm) {
 			Assertions::Near(0, Quaternion(0, 0, 0, 0).Norm());
 			Assertions::Near(2, Quaternion(1, 1, 1, 1).Norm());
