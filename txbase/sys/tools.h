@@ -1,6 +1,7 @@
 #pragma once
 
 #include "txbase/fwddecl.h"
+#include <sstream>
 #include <mutex>
 #include <atomic>
 
