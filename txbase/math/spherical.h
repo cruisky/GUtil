@@ -45,6 +45,6 @@ namespace TX {
 	};
 
 	inline std::ostream& operator << (std::ostream& os, const Spherical& s) {
-		return os << "(r=" << s.rho << ", th=" << s.theta << ", ph=" << s.phi << ")";
+		return os << "(r=" << s.Radial() << ", th=" << s.Polar() << ", ph=" << s.Azimuthal() << ")";
 	}
 }

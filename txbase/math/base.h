@@ -2,6 +2,8 @@
 
 #include <limits>
 #include <cmath>
+#include <utility>
+#include <cassert>
 
 namespace TX {
 	namespace Math {
