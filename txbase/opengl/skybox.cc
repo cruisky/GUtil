@@ -12,7 +12,8 @@ namespace TX {
 
 			void main()
 			{
-				gl_Position = iMVP * vec4(vertPos, 1.0);
+				vec4 fragPos = iMVP * vec4(vertPos, 1.0);
+				gl_Position = fragPos.xyww;		// maximum depth value = 1.0
 				texCoord = vertPos;
 			}
 		)";
