@@ -37,7 +37,7 @@ namespace TX {
 			IndexBuffer ebo;
 		};
 
-		Skybox::Skybox(const Image faces[6], float distance): p(new Impl)
+		Skybox::Skybox(const Image faces[6]): p(new Impl)
 		{
 			// Shader
 			Compile(
@@ -46,7 +46,7 @@ namespace TX {
 
 			// Cube mesh
 			TX::Mesh cube;
-			cube.LoadCube(distance / 2);
+			cube.LoadCube(1);
 			p->vao.Bind();
 			{
 				p->vbo.Data(cube.vertices.size() * sizeof(cube.vertices[0]), cube.vertices.data());
