@@ -10,8 +10,10 @@ namespace TX {
 			struct Impl;
 			const std::unique_ptr<Impl> p;
 		public:
-			Skybox(const Image faces[6]);
+			Skybox();
 			~Skybox();
+
+			Cubemap& GetCubemap();
 
 			void Draw(const Camera& camera) const;
 		};

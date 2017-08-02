@@ -21,6 +21,7 @@ namespace TX {
 			throw std::runtime_error(filename + ": read failed.");
 		}
 
+		std::printf("image: %s\n", filename.c_str());
 		std::printf("data: %p\n", data);
 		std::printf("size: %d x %d, channels: %d\n", width, height, channels);
 

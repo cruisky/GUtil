@@ -175,6 +175,48 @@ namespace TX
 				Parameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				Parameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 			}
+
+			//      +----+
+			//      | TP |
+			// +----+    +----+----+
+			// | LT   FT   RT   BK |
+			// +----+    +----+----+
+			//      | BT |
+			//      +----+
+			inline void Data_HorizontalCross(const Image map) {
+				assert(map.Width() % 4 == 0);
+				assert(map.Height() % 3 == 0);
+				assert(map.Width() / 4 == map.Height() / 3);
+
+				static const Vec2i FACE_MAP[] = {
+					Vec2i(2, 1),	// RT
+					Vec2i(0, 1),	// LT
+					Vec2i(1, 0),	// TP
+					Vec2i(1, 2),	// BT
+					Vec2i(1, 1),	// FT
+					Vec2i(3, 1),	// BK
+				};
+				const int faceSize = map.Width() / 4;
+				const int stride = map.Width();
+				std::vector<Image> faces;
+				for (int i = 0; i < 6; i++) {
+					faces.emplace_back(faceSize, faceSize);
+					Image& face = faces.back();
+
+					Vec2i faceBegin = FACE_MAP[i] * faceSize;
+					Vec2i faceEnd = faceBegin + faceSize;
+
+					const Color *srcRow = map.Data() + faceBegin.y * map.Width() + faceBegin.x;
+					Color *dstRow = face.Data();
+
+					for (int y = faceBegin.y; y < faceEnd.y; y++) {
+						memcpy(dstRow, srcRow, faceSize * sizeof(Color));
+						srcRow += stride;
+						dstRow += faceSize;
+					}
+				}
+				return Data(faces.data());
+			}
 		};
 
 		// Usually as stencil/depth buffer attachment.

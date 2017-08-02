@@ -35,32 +35,34 @@ namespace TX {
 			VertexArray vao;
 			VertexBuffer vbo;
 			IndexBuffer ebo;
+
+			Impl() {
+				// Cube mesh
+				TX::Mesh cube;
+				cube.LoadCube(1);
+				vao.Bind();
+				{
+					vbo.Data(cube.vertices.size() * sizeof(cube.vertices[0]), cube.vertices.data());
+					glEnableVertexAttribArray(ATTRIB_POS);
+					glVertexAttribPointer(ATTRIB_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+					ebo.Data(cube.indices.size() * sizeof(cube.indices[0]), cube.indices.data());
+				}
+				vao.Unbind();
+			}
 		};
 
-		Skybox::Skybox(const Image faces[6]): p(new Impl)
+		Skybox::Skybox(): p(new Impl)
 		{
-			// Shader
 			Compile(
 				GL::Shader(GL_VERTEX_SHADER, SKYBOX_VS),
 				GL::Shader(GL_FRAGMENT_SHADER, SKYBOX_FS));
-
-			// Cube mesh
-			TX::Mesh cube;
-			cube.LoadCube(1);
-			p->vao.Bind();
-			{
-				p->vbo.Data(cube.vertices.size() * sizeof(cube.vertices[0]), cube.vertices.data());
-				glEnableVertexAttribArray(ATTRIB_POS);
-				glVertexAttribPointer(ATTRIB_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-				p->ebo.Data(cube.indices.size() * sizeof(cube.indices[0]), cube.indices.data());
-			}
-			p->vao.Unbind();
-
-			// Cubemap
-			p->cubemap.Data(faces);
 		}
 
 		Skybox::~Skybox() {}
+
+		Cubemap& Skybox::GetCubemap() {
+			return p->cubemap;
+		}
 
 		void Skybox::Draw(const Camera& camera) const {
 			glDisable(GL_DEPTH_TEST);
@@ -83,6 +85,7 @@ namespace TX {
 				(void *)0
 			);
 			p->vao.Unbind();
+			p->cubemap.Unbind();
 
 			glDepthMask(GL_TRUE);
 			glEnable(GL_DEPTH_TEST);
