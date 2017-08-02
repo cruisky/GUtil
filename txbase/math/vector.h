@@ -262,6 +262,21 @@ namespace TX
 		inline Vec<3, T> ToDeg(const Vec<3, T>& v) { return Vec<3, T>(ToDeg(v.x), ToDeg(v.y), ToDeg(v.z)); }
 		template <typename T>
 		inline Vec<3, T> Lerp(float t, const Vec<3, T>& v1, const Vec<3, T>& v2) { return Vec<3, T>(Lerp(t, v1.x, v2.x), Lerp(t, v1.y, v2.y), Lerp(t, v1.z, v2.z)); }
+		template <typename T>
+		inline Vec<3, T> Slerp(float t, const Vec<3, T>& v1, const Vec<3, T>& v2) {
+			// Normalize v1, v2
+			float mag1 = Length(v1), mag2 = Length(v2);
+			Vec<3, T> v1n = v1 / mag1, v2n = v2 / mag2;
+			// Clamp into the range of Acos()
+			float dot = Clamp(Dot(v1n, v2n), -1.0f, 1.0f);
+			// Interpolate the angle
+			float theta = Acos(dot) * t;
+			// Interpolate the magnitude
+			float mag = Lerp(t, mag1, mag2);
+			// Result
+			Vec<3, T> relativeVec = Normalize(v2n - v1n * dot);
+			return (v1n * Cos(theta) + relativeVec * Sin(theta)) * mag;
+		}
 	}
 
 	template <typename T>

@@ -70,6 +70,36 @@ namespace TX {
 			Assertions::Near(3.7416573f, Length(Vec3(-1, 2, -3)));
 		}
 
+		TEST(Vec3Tests, Lerp) {
+			Vec3 a(0, 0, 0), b(10, 20, 30);
+			Assertions::Near(a, Lerp(0, a, b));
+			Assertions::Near(Vec3(1, 2, 3), Lerp(0.1f, a, b));
+			Assertions::Near(Vec3(5, 10, 15), Lerp(0.5f, a, b));
+			Assertions::Near(Vec3(9, 18, 27), Lerp(0.9f, a, b));
+			Assertions::Near(b, Lerp(1, a, b));
+		}
+
+		TEST(Vec3Tests, Slerp) {
+			{
+				SCOPED_TRACE("");
+				Vec3 a(10, 0, 0), b(0, 20, 0);
+				Assertions::Near(a, Slerp(0, a, b));
+				Assertions::Near(Vec3(10.8645f, 1.72077f, 0), Slerp(0.1f, a, b));
+				Assertions::Near(Vec3(10.6066f, 10.6065f, 0), Slerp(0.5f, a, b));
+				Assertions::Near(Vec3(2.97225f, 18.7659f, 0), Slerp(0.9f, a, b));
+				Assertions::Near(b, Slerp(1, a, b));
+			}
+			{
+				SCOPED_TRACE("");
+				Vec3 a(0, 10, 0), b(0, 0, 10);
+				Assertions::Near(a, Slerp(0, a, b));
+				Assertions::Near(Vec3(0, 9.87688f, 1.56433f), Slerp(0.1f, a, b));
+				Assertions::Near(Vec3(0, 7.07106f, 7.07103f), Slerp(0.5f, a, b));
+				Assertions::Near(Vec3(0, 1.56434f, 9.87684f), Slerp(0.9f, a, b));
+				Assertions::Near(b, Slerp(1, a, b));
+			}
+		}
+
 		class Vec4Tests : public ::testing::Test
 		{
 		};
